@@ -7,6 +7,24 @@
 
 use Drupal\Core\Render\Element;
 use Drupal\Core\Template\Attribute;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function bootstrap_layout_builder_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the bootstrap_layout_builder module.
+    case 'help.page.bootstrap_layout_builder':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Add Bootstrap Grid support to Layout Builder module.
+      currently, work for both Bootstrap 3 and Bootstrap 4.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
 
 /**
  * Implements hook_theme().
