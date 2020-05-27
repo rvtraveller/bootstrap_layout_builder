@@ -3,5 +3,7 @@ description: 'Add Bootstrap Grid support to Layout Builder module.'
 type: module
 core: 8.x
 core_version_requirement: ^8 || ^9
+configure: bootstrap_layout_builder.settings
+package: 'Layout Builder'
 dependencies:
   - drupal:layout_builder
