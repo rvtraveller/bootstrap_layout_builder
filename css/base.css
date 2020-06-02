@@ -1,0 +1,54 @@
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios input {
+  visibility: hidden;
+  position: absolute;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios input:checked + label.option {
+  border: 2px solid #000000;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option {
+  cursor: pointer !important;
+  border: 1px solid #000000;
+  border-radius: 50%;
+  font-size: 0.00001px;
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  float: left;
+  margin: 5px 5px 5px 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option:after {
+  display: table;
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0px;
+  bottom: 0;
+  z-index: 1;
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option:hover {
+  opacity: 0.8;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option._none {
+  background: #ffffff !important;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option._none:after {
+  content: '\2613';
+  color: red;
+  font-size: 35px;
+  top: -8px;
+  position: absolute;
+}
