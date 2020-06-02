@@ -61,10 +61,23 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $build = parent::build($regions);
     // Container.
     if ($this->configuration['container']) {
-      if ($this->configuration['container_wrapper_classes']) {
-        $build['container_wrapper']['#attributes']['class'] = $this->configuration['container_wrapper_classes'];
-      }
       $build['container']['#attributes']['class'] = $this->configuration['container'];
+
+      if ($this->configuration['container_wrapper_bg_color_class'] || $this->configuration['container_wrapper_classes']) {
+        $container_wrapper_classes = '';
+        if ($this->configuration['container_wrapper_bg_color_class']) {
+          $container_wrapper_classes .= $this->configuration['container_wrapper_bg_color_class'];
+        }
+
+        if ($this->configuration['container_wrapper_classes']) {
+          // Add space after the last class.
+          if ($container_wrapper_classes) {
+            $container_wrapper_classes = $container_wrapper_classes . ' ';
+          }
+          $container_wrapper_classes .= $this->configuration['container_wrapper_classes'];
+        }
+        $build['container_wrapper']['#attributes']['class'] = $container_wrapper_classes;
+      }
     }
 
     // Section Classes.
@@ -99,6 +112,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     return $default_configuration + [
       // Container wrapper commonly used on container background and minor styling.
       'container_wrapper_classes' => '',
+      // Add background color to container wrapper.
+      'container_wrapper_bg_color_class' => '',
       // Container is the section wrapper.
       // Empty means no container else it reflect container type.
       // In bootstrap it will be 'container' or 'container-fluid'.
@@ -123,6 +138,30 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $hide_section_settings = (bool) $config->get('hide_section_settings');
     }
     return $hide_section_settings;
+  }
+
+  /**
+   * Helper function to get the options of given style name.
+   *
+   * @param string $name
+   *   A config style name like background_color.
+   *
+   * @return array
+   *   Array of key => value of style name options.
+   */
+  public function getStyleOptions(string $name) {
+    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
+    $options = [];
+    $config_options = $config->get($name);
+
+    $options = ['_none' => t('N/A')];
+    $lines = explode(PHP_EOL, $config_options);
+    foreach ($lines as $line) {
+      $line = explode('|', $line);
+      $options[$line[0]] = $line[1];
+    }
+
+    return $options;
   }
 
   /**
@@ -167,6 +206,21 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
+      $form['container_wrapper_bg_color_class'] = [
+        '#type' => 'radios',
+        '#options' => $this->getStyleOptions('background_colors'),
+        '#title' => $this->t('Background color'),
+        '#default_value' => $this->configuration['container_wrapper_bg_color_class'],
+        '#attributes' => [
+          'class' => ['bootstrap_layout_builder_bg_color'],
+        ],
+        '#states' => [
+          'visible' => [
+            ':input[name="layout_settings[has_container_wrapper]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ];
+
       $form['container_wrapper_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Container wrapper classes'),
@@ -201,6 +255,9 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ];
       }
     }
+
+    // Attache the Bootstrap Layout Builder base libraray.
+    $form['#attached']['library'][] = 'bootstrap_layout_builder/base';
     return $form;
   }
 
@@ -218,6 +275,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         $this->configuration['container'] = $form_state->getValue('container_type');
         // Container wrapper.
         if ($form_state->getValue('has_container_wrapper')) {
+          $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue('container_wrapper_bg_color_class');
           $this->configuration['container_wrapper_classes'] = $form_state->getValue('container_wrapper_classes');
         }
       }
