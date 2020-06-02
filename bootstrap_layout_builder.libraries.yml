@@ -1,0 +1,7 @@
+# Bootstrap Layout Builder base styles.
+base:
+  css:
+    theme:
+      css/base.css: { }
+  js:
+    js/base.js: { }
