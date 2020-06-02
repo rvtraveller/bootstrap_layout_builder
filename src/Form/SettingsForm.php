@@ -45,6 +45,21 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('hide_section_settings'),
     ];
 
+    $form['style'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Style'),
+      '#open' => TRUE,
+    ];
+
+    $form['style']['background_colors'] = [
+      '#type' => 'textarea',
+      '#default_value' => $config->get('background_colors'),
+      '#title' => $this->t('Background colors (classes)'),
+      '#description' => $this->t('<p>Enter one value per line, in the format <b>key|label</b> where <em>key</em> is the CSS class name (without the .), and <em>label</em> is the human readable name of the background.</p>'),
+      '#cols' => 60,
+      '#rows' => 5,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -54,6 +69,7 @@ class SettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->configFactory->getEditable(static::SETTINGS)
       ->set('hide_section_settings', $form_state->getValue('hide_section_settings'))
+      ->set('background_colors', $form_state->getValue('background_colors'))
       ->save();
 
     parent::submitForm($form, $form_state);
