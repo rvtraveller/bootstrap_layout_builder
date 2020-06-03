@@ -1,0 +1,170 @@
+#drupal-off-canvas {
+  // General styling.
+  .form-composite {
+    > legend, .label {
+      font-weight: normal;
+    }
+  }
+
+  // Color field.
+  .bootstrap_layout_builder_bg_color {
+    .form-radios {
+      input {
+        visibility: hidden;
+        position: absolute;
+        &:checked + label.option {
+          border: 2px solid #000000;
+        }
+      }
+
+      label {
+        &.option {
+          cursor: pointer !important;
+          border: 1px solid #000000;
+          border-radius: 50%;
+          font-size: 0.00001px;
+          position: relative;
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          float: left;
+          margin: 5px 5px 5px 0;
+          padding: 0;
+          white-space: nowrap;
+          &:hover {
+            opacity: 0.8;
+          }
+          &:after {
+            display: table;
+            position: absolute;
+            top: 3px;
+            left: 0;
+            right: 0px;
+            bottom: 0;
+            z-index: 1;
+            font-size: 20px;
+            text-align: center;
+            vertical-align: middle;
+            width: 100%;
+            height: 100%;
+          }
+          &._none {
+            background: #ffffff !important;
+            &:after {
+              content: '\2613';
+              color: red;
+              font-size: 35px;
+              top: -8px;
+              position: absolute;
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  // Media library.
+  // @TODO Add class for media.
+  .media-library-item {
+    width: 100%;
+    position: relative;
+    justify-content: center;
+    vertical-align: top;
+    border: 1px solid #dbdbdb;
+    margin: 0 auto;
+    background: #fff;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    *, *:not(div) {
+      background: transparent;
+    }
+    input[type="submit"].button.media-library-item__remove {
+      position: absolute;
+      z-index: 1;
+      top: 10px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      margin: 5px;
+      padding: 0;
+      -webkit-transition: 0.2s border-color;
+      -o-transition: 0.2s border-color;
+      transition: 0.2s border-color;
+      color: transparent;
+      border: 2px solid #ccc;
+      border-radius: 20px;
+      background: url(../images/ex.svg) #fff center no-repeat;
+      -webkit-background-size: 16px 16px ;
+      background-size: 16px 16px;
+      text-shadow: none;
+      &:hover, &:focus {
+        background: url(../images/ex_dark.svg) #fff center no-repeat;
+      } 
+      &.button {
+        &:disabled, &:disabled:active, &:hover, &:focus {
+          background: url(../images/ex_dark.svg) #fff center no-repeat;
+        }
+      }
+    }
+    .js-click-to-select-trigger {
+      overflow: hidden;
+      cursor: pointer;
+    }
+  }
+  .media-library-views-form,
+  .media-library-selection,
+  .media-library-add-form__selected-media .details-wrapper,
+  .media-library-views-form__bulk_form,
+  .media-library-view .form--inline {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .media-library-selection {
+    margin: 1em 0;
+  }
+  .media-library-item__preview {
+    padding-bottom: 34px;
+  }
+  .media-library-form-element {
+    .media-library-open-button {
+      color: #212529;
+      background-color: #f8f9fa;
+      border-color: #f8f9fa;
+      &:hover {
+        color: #212529;
+        background-color: #e2e6ea;
+        border-color: #dae0e5;
+      }
+    }
+    .media-library-form-element-empty-text,
+    .description,
+    .js-hide,
+    .media-library-selection:empty {
+      display: none !important;
+    }
+  }
+  .media-library-item__attributes {
+    position: absolute;
+    bottom: 0;
+    display: block;
+    padding: 5px;
+    max-height: calc(100% - 50px);
+    overflow: hidden;
+    background: white !important;
+  }
+  .media-library-item__attributes {
+    position: absolute;
+    bottom: 0;
+    display: block;
+    padding: 5px;
+    max-height: calc(100% - 50px);
+    overflow: hidden;
+    background: white !important;
+  }
+  .media-library-selection {
+    margin: 0;
+    .media-library-item--grid {
+      width: 100%;
+    }
+  }
+}
