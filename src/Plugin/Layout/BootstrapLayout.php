@@ -114,6 +114,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       'container_wrapper_classes' => '',
       // Add background color to container wrapper.
       'container_wrapper_bg_color_class' => '',
+      // Add background media to container wrapper.
+      'container_wrapper_bg_media' => 0,
       // Container is the section wrapper.
       // Empty means no container else it reflect container type.
       // In bootstrap it will be 'container' or 'container-fluid'.
@@ -195,10 +197,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-      $form['has_container_wrapper'] = [
-        '#type' => 'checkbox',
-        '#title' => $this->t('Add Container Wrapper'),
-        '#default_value' => (int) !empty($this->configuration['container_wrapper_classes']) ? TRUE : FALSE,
+      $form['background'] = [
+        '#type' => 'details',
+        '#title' => $this->t('Background'),
+        '#open' => FALSE,
         '#states' => [
           'visible' => [
             ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
@@ -206,7 +208,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-      $form['container_wrapper_bg_color_class'] = [
+      $form['background']['container_wrapper_bg_color_class'] = [
         '#type' => 'radios',
         '#options' => $this->getStyleOptions('background_colors'),
         '#title' => $this->t('Background color'),
@@ -221,16 +223,20 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
+      $form['background']['container_wrapper_bg_media'] = [
+        '#type' => 'media_library',
+        '#title' => $this->t('Background media'),
+        '#description' => $this->t('Background media'),
+        '#allowed_bundles' => ['image', 'video'],
+        '#default_value' => $this->configuration['container_wrapper_bg_media'] ?: 0,
+        '#prefix' => '<hr />',
+      ];
+
       $form['container_wrapper_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Container wrapper classes'),
         '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
         '#default_value' => $this->configuration['container_wrapper_classes'],
-        '#states' => [
-          'visible' => [
-            ':input[name="layout_settings[has_container_wrapper]"]' => ['checked' => TRUE],
-          ],
-        ],
       ];
 
       $form['section_classes'] = [
@@ -274,10 +280,9 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       if ($form_state->getValue('has_container')) {
         $this->configuration['container'] = $form_state->getValue('container_type');
         // Container wrapper.
-        if ($form_state->getValue('has_container_wrapper')) {
-          $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue('container_wrapper_bg_color_class');
-          $this->configuration['container_wrapper_classes'] = $form_state->getValue('container_wrapper_classes');
-        }
+        $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue('background')['container_wrapper_bg_color_class'];
+        $this->configuration['container_wrapper_bg_media'] = $form_state->getValue('background')['container_wrapper_bg_media'];
+        $this->configuration['container_wrapper_classes'] = $form_state->getValue('container_wrapper_classes');
       }
 
       $this->configuration['section_classes'] = $form_state->getValue('section_classes');
