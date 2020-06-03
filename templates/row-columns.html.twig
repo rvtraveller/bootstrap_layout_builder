@@ -19,9 +19,7 @@
 
 {% if content %}
   {% if content['container'] %}
-    {% if content['container_wrapper'] %}
-      <div {{ container_wrapper_attributes }}>
-    {% endif %}
+    <div {{ container_wrapper_attributes }}>
       <div {{ container_attributes }}>
   {% endif %}
 
@@ -37,9 +35,7 @@
     </div>
 
   {% if content['container'] %}
-    {% if content['container_wrapper'] %}
       </div>
-    {% endif %}
     </div>
   {% endif %}
 {% endif %}
