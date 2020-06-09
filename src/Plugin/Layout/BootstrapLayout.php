@@ -197,7 +197,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-
       $form['ui'] = array(
         '#type' => 'horizontal_tabs',
         '#tree' => TRUE,
@@ -218,29 +217,32 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           'title' => $this->t('Background'),
         ),
         array(
-          'machine_name' => 'text_color',
-          'icon' => 'color.svg',
-          'title' => $this->t('Text Color'),
+          'machine_name' => 'layout',
+          'icon' => 'layout.svg',
+          'title' => $this->t('Layout'),
         ),
         array(
-          'machine_name' => 'other',
-          'icon' => 'other.svg',
-          'title' => $this->t('Other'),
+          'machine_name' => 'settings',
+          'icon' => 'default.svg',
+          'title' => $this->t('Settings'),
         ),
       );
 
       foreach ($tabs as $tab) {
         $form['ui'][$tab['machine_name']] = array(
           '#type' => 'details',
-          '#title' => $tab['icon'] ? '<h1>' . $tab['icon'] . '</h1>' : $tab['title'],
-//          '#title' => $tab['icon'] ? '<img src="./images/' . $tab['icon'] . '"/>' : $tab['title'],
+          '#title' => $tab['title'],
+          '#attributes' => [
+            'data-layout-plugin' => $tab['title'],
+          ],
+          '#description' => t('<img class="bootstrap_layout_builder_icon" src="/' . drupal_get_path('module', 'bootstrap_layout_builder') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg') . '" />'),
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
-          '#states' => [
-            'visible' => [
-              ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
-            ],
-          ],
+//          '#states' => [
+//            'visible' => [
+//              ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
+//            ],
+//          ],
         );
       }
 
@@ -269,30 +271,43 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#prefix' => '<hr />',
       ];
 
-      // Custom Classes
-      $form['container_wrapper_classes'] = [
+      // Container Classes
+      $form['ui']['layout']['container'] = [
+        '#type' => 'details',
+        '#title' => $this->t('Container Settings'),
+        '#open' => FALSE,
+      ];
+
+      $form['ui']['layout']['container']['container_wrapper_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Container wrapper classes'),
         '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
         '#default_value' => $this->configuration['container_wrapper_classes'],
       ];
 
-      $form['section_classes'] = [
+      // Row Classes
+      $form['ui']['layout']['row'] = [
+        '#type' => 'details',
+        '#title' => $this->t('Row Settings'),
+        '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
+        '#open' => FALSE,
+      ];
+      $form['ui']['layout']['row']['section_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Row classes'),
         '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
         '#default_value' => $this->configuration['section_classes'],
       ];
 
-      $form['regions'] = [
+      $form['ui']['layout']['regions'] = [
         '#type' => 'details',
         '#title' => $this->t('Columns Settings'),
         '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
-        '#open' => TRUE,
+        '#open' => FALSE,
       ];
 
       foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
-        $form['regions'][$region_name . '_classes'] = [
+        $form['ui']['layout']['regions'][$region_name . '_classes'] = [
           '#type' => 'textfield',
           '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
           '#default_value' => $this->configuration['regions_classes'][$region_name],

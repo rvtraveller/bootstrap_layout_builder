@@ -19,20 +19,34 @@ $black: #000000;
 
   // Our Custom UI
   .bootstrap_layout_builder_ui {
-    margin-top: 10px;
 
     // We reuse drupals default horizontal tabs.
     .horizontal-tabs {
       border: none;
+
+      &:after {
+        content: '';
+        width: 15px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: calc(100% - -5px);
+        background: rgb(68, 68, 68);
+        background: linear-gradient(90deg, rgba(68, 68, 68, 0) 0%, rgba(68, 68, 68, 1) 100%);
+        position: absolute;
+      }
     }
 
     // Our icons/headings
     .horizontal-tabs-list {
       position: relative;
       display: flex;
+      justify-content: center;
       flex-wrap: nowrap;
       overflow-x: scroll;
-      margin: 0 -1px;
+      margin: 0 -20px 20px -20px;
+      width: calc(100% + 40px);
+      background: rgba($gray-212, .25);
 
       li {
         margin: 0 1px;
@@ -59,25 +73,12 @@ $black: #000000;
           }
         }
       }
-
-
-
-      &:after {
-        content: '';
-        width: 15px;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: calc(100% - 10px);
-        background: rgb(68, 68, 68);
-        background: linear-gradient(90deg, rgba(68, 68, 68, 0) 0%, rgba(68, 68, 68, 1) 100%);
-        position: absolute;
-      }
     }
   }
 
   .bootstrap_layout_builder_icon {
-
+    max-width: 24px;
+    height: auto;
   }
 
   // Color field.

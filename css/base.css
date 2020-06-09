@@ -2,20 +2,31 @@
   font-weight: normal;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui {
-  margin-top: 10px;
-}
-
 #drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs {
   border: none;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs:after {
+  content: '';
+  width: 15px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: calc(100% - -5px);
+  background: #444444;
+  background: linear-gradient(90deg, rgba(68, 68, 68, 0) 0%, #444444 100%);
+  position: absolute;
 }
 
 #drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list {
   position: relative;
   display: flex;
+  justify-content: center;
   flex-wrap: nowrap;
   overflow-x: scroll;
-  margin: 0 -1px;
+  margin: 0 -20px 20px -20px;
+  width: calc(100% + 40px);
+  background: rgba(33, 37, 41, 0.25);
 }
 
 #drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list li {
@@ -44,16 +55,9 @@
   background: rgba(33, 37, 41, 0.5);
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list:after {
-  content: '';
-  width: 15px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: calc(100% - 10px);
-  background: #444444;
-  background: linear-gradient(90deg, rgba(68, 68, 68, 0) 0%, #444444 100%);
-  position: absolute;
+#drupal-off-canvas .bootstrap_layout_builder_icon {
+  max-width: 24px;
+  height: auto;
 }
 
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios input {
