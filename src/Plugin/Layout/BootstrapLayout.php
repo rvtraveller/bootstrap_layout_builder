@@ -197,18 +197,55 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-      $form['background'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Background'),
-        '#open' => FALSE,
+
+      $form['ui'] = array(
+        '#type' => 'horizontal_tabs',
+        '#tree' => TRUE,
+        '#prefix' => '<div class="bootstrap_layout_builder_ui">',
+        '#suffix' => '</div>',
+        // @todo: states don't seem to work on horizontal tabs?
         '#states' => [
           'visible' => [
             ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
           ],
         ],
-      ];
+      );
 
-      $form['background']['container_wrapper_bg_color_class'] = [
+      $tabs = array(
+        array(
+          'machine_name' => 'background',
+          'icon' => 'bg.svg',
+          'title' => $this->t('Background'),
+        ),
+        array(
+          'machine_name' => 'text_color',
+          'icon' => 'color.svg',
+          'title' => $this->t('Text Color'),
+        ),
+        array(
+          'machine_name' => 'other',
+          'icon' => 'other.svg',
+          'title' => $this->t('Other'),
+        ),
+      );
+
+      foreach ($tabs as $tab) {
+        $form['ui'][$tab['machine_name']] = array(
+          '#type' => 'details',
+          '#title' => $tab['icon'] ? '<h1>' . $tab['icon'] . '</h1>' : $tab['title'],
+//          '#title' => $tab['icon'] ? '<img src="./images/' . $tab['icon'] . '"/>' : $tab['title'],
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#states' => [
+            'visible' => [
+              ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
+            ],
+          ],
+        );
+      }
+
+      // Background Settings
+      $form['ui']['background']['container_wrapper_bg_color_class'] = [
         '#type' => 'radios',
         '#options' => $this->getStyleOptions('background_colors'),
         '#title' => $this->t('Background color'),
@@ -223,7 +260,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-      $form['background']['container_wrapper_bg_media'] = [
+      $form['ui']['background']['container_wrapper_bg_media'] = [
         '#type' => 'media_library',
         '#title' => $this->t('Background media'),
         '#description' => $this->t('Background media'),
@@ -232,6 +269,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#prefix' => '<hr />',
       ];
 
+      // Custom Classes
       $form['container_wrapper_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Container wrapper classes'),
