@@ -7,6 +7,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\media\Entity\Media;
+use Drupal\file\Entity\File;
 
 /**
  * A layout from our bootstrap layout builder.
@@ -78,6 +80,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         }
         $build['container_wrapper']['#attributes']['class'] = $container_wrapper_classes;
       }
+
+      if ($this->configuration['container_wrapper_bg_media']) {
+        $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMedia($this->configuration['container_wrapper_bg_media']);
+      }
     }
 
     // Section Classes.
@@ -115,7 +121,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // Add background color to container wrapper.
       'container_wrapper_bg_color_class' => '',
       // Add background media to container wrapper.
-      'container_wrapper_bg_media' => 0,
+      'container_wrapper_bg_media' => NULL,
       // Container is the section wrapper.
       // Empty means no container else it reflect container type.
       // In bootstrap it will be 'container' or 'container-fluid'.
@@ -125,6 +131,29 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // Region refer to the div that contains Col in bootstrap.
       'regions_classes' => $regions_classes,
     ];
+  }
+
+  /**
+   * Helper function to the background media style.
+   *
+   * @return string
+   *   Background style.
+   */
+  public function buildBackgroundMedia($media_id) {
+    $style = '';
+    $media_entity = Media::load($media_id);
+
+    // @TODO make this dynamic by configuration
+    $bundle = $media_entity->bundle();
+    if ($bundle == 'image') {
+      $fid = $media_entity->get('image')->target_id;
+      $file = File::load($fid);
+      $background_url = $file->url();
+
+      $style = 'background-image: url(' . $background_url . '); background-repeat: no-repeat; background-size: cover;';
+    }
+
+    return $style;
   }
 
   /**
@@ -228,7 +257,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#title' => $this->t('Background media'),
         '#description' => $this->t('Background media'),
         '#allowed_bundles' => ['image', 'video'],
-        '#default_value' => $this->configuration['container_wrapper_bg_media'] ?: 0,
+        '#default_value' => $this->configuration['container_wrapper_bg_media'],
         '#prefix' => '<hr />',
       ];
 
@@ -272,7 +301,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
-
     // Check if section settings visible.
     if (!$this->sectionSettingsIsHidden()) {
       // Container type.

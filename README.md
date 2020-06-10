@@ -60,3 +60,4 @@ MAINTAINERS
 Current maintainers:
 
  * Mahmoud Zayed (https://www.drupal.org/u/mahmoud-zayed)
+ * Aaron Christian (https://www.drupal.org/u/aaronchristian)
