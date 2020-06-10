@@ -4,7 +4,7 @@
   "author": "Mahmoud Zayed",
   "version": "1.2.0",
   "scripts": {
-    "css:compile": "node-sass scss/base.scss --output-style expanded -o css",
+    "css:compile": "node-sass scss/base.scss --output-style expanded -o css && node-sass scss/background_media_local_video.scss --output-style expanded -o css",
     "css:build": "npm run css:compile",
     "css:watch": "nodemon -e scss -x \"npm run css:build\" --ignore dist",
     "watch": "nodemon -e scss -x \"npm run build\" --ignore dist",

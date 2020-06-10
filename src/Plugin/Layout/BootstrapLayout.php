@@ -61,13 +61,30 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    */
   public function build(array $regions) {
     $build = parent::build($regions);
+
+    // Flag for local video.
+    $has_background_local_video = FALSE;
+
     // Container.
     if ($this->configuration['container']) {
       $build['container']['#attributes']['class'] = $this->configuration['container'];
 
+      if ($media_id = $this->configuration['container_wrapper_bg_media']) {
+        $media_entity = Media::load($media_id);
+        $bundle = $media_entity->bundle();
+        if ($bundle == 'image') {
+          $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity);
+        }
+        elseif ($bundle == 'video_file') {
+          $has_background_local_video = TRUE;
+          $build['container_wrapper']['#video_wrapper_classes'] = $this->configuration['container_wrapper_bg_color_class'];
+          $build['container_wrapper']['#video_background_url'] = $this->buildBackgroundMediaLocalVideo($media_entity);
+        }
+      }
+
       if ($this->configuration['container_wrapper_bg_color_class'] || $this->configuration['container_wrapper_classes']) {
         $container_wrapper_classes = '';
-        if ($this->configuration['container_wrapper_bg_color_class']) {
+        if ($this->configuration['container_wrapper_bg_color_class'] && !$has_background_local_video) {
           $container_wrapper_classes .= $this->configuration['container_wrapper_bg_color_class'];
         }
 
@@ -81,9 +98,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         $build['container_wrapper']['#attributes']['class'] = $container_wrapper_classes;
       }
 
-      if ($this->configuration['container_wrapper_bg_media']) {
-        $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMedia($this->configuration['container_wrapper_bg_media']);
-      }
     }
 
     // Section Classes.
@@ -134,26 +148,32 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   }
 
   /**
-   * Helper function to the background media style.
+   * Helper function to the background media image style.
    *
    * @return string
-   *   Background style.
+   *   Background media image style.
    */
-  public function buildBackgroundMedia($media_id) {
-    $style = '';
-    $media_entity = Media::load($media_id);
-
+  public function buildBackgroundMediaImage($media_entity) {
     // @TODO make this dynamic by configuration
-    $bundle = $media_entity->bundle();
-    if ($bundle == 'image') {
-      $fid = $media_entity->get('image')->target_id;
-      $file = File::load($fid);
-      $background_url = $file->url();
+    $fid = $media_entity->get('image')->target_id;
+    $file = File::load($fid);
+    $background_url = $file->url();
 
-      $style = 'background-image: url(' . $background_url . '); background-repeat: no-repeat; background-size: cover;';
-    }
-
+    $style = 'background-image: url(' . $background_url . '); background-repeat: no-repeat; background-size: cover;';
     return $style;
+  }
+
+  /**
+   * Helper function to the background media local video style.
+   *
+   * @return string
+   *   Background media local video style.
+   */
+  public function buildBackgroundMediaLocalVideo($media_entity) {
+    // @TODO make this dynamic by configuration
+    $fid = $media_entity->get('field_media_video_file')->target_id;
+    $file = File::load($fid);
+    return $file->url();
   }
 
   /**
@@ -256,7 +276,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#type' => 'media_library',
         '#title' => $this->t('Background media'),
         '#description' => $this->t('Background media'),
-        '#allowed_bundles' => ['image', 'video'],
+        '#allowed_bundles' => ['image', 'video_file'],
         '#default_value' => $this->configuration['container_wrapper_bg_media'],
         '#prefix' => '<hr />',
       ];
@@ -291,7 +311,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       }
     }
 
-    // Attache the Bootstrap Layout Builder base libraray.
+    // Attach the Bootstrap Layout Builder base libraray.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/base';
     return $form;
   }
