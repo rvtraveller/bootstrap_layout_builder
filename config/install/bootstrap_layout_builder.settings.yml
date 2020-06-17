@@ -1,1 +1,28 @@
 hide_section_settings: 0
+background_colors: "bg-success|Green\r\nbg-warning|Yellow"
+default_breakpoint: mobile
+default_breakpoint_label: 'Layout'
+layouts:
+  blb_col_2:
+    options:
+      -
+        structure: '6 6'
+        enabled: TRUE
+        breakpoints:
+          desktop: TRUE
+          tablet: TRUE
+          mobile: TRUE
+      - 
+        structure: '8 4'
+        enabled: TRUE
+        breakpoints:
+          desktop: TRUE
+          tablet: TRUE
+          mobile: TRUE
+      - 
+        structure: '4 8'
+        enabled: TRUE
+        breakpoints:
+          desktop: TRUE
+          tablet: TRUE
+          mobile: TRUE

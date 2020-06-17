@@ -1,0 +1,5 @@
+entity.blb_breakpoint.add_form:
+  route_name: 'entity.blb_breakpoint.add_form'
+  title: 'Add breakpoint'
+  appears_on:
+  - entity.blb_breakpoint.collection
