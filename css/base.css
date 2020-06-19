@@ -1,34 +1,27 @@
+#drupal-off-canvas {
+  width: 100% !important;
+}
+
 #drupal-off-canvas .form-composite > legend, #drupal-off-canvas .form-composite .label {
   font-weight: normal;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs {
+#drupal-off-canvas .blb_ui .blb_nav-tabs {
   position: relative;
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
   margin: 0 -20px 20px -20px;
   width: calc(100% + 40px);
-  background: rgba(33, 37, 41, 0.25);
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs:after {
-  content: '';
-  width: 15px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: calc(100% - -5px);
-  background: #444444;
-  background: linear-gradient(90deg, rgba(68, 68, 68, 0) 0%, #444444 100%);
-  position: absolute;
-}
-
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li {
+#drupal-off-canvas .blb_ui .blb_nav-tabs li {
+  flex: 1 1 auto;
   margin: 0 1px;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li a {
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a {
+  cursor: pointer;
   position: relative;
   padding: .5rem .75rem;
   min-height: 50px;
@@ -43,26 +36,39 @@
   transition: .2s background-color ease-in-out;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li a:hover {
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a.active, #drupal-off-canvas .blb_ui .blb_nav-tabs li a.active:hover {
+  background-color: #444444;
+}
+
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a:hover {
   background: rgba(33, 37, 41, 0.5);
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li a:hover .blb_tooltip {
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a:hover .blb_tooltip {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0px);
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_icon {
+#drupal-off-canvas .blb_ui .blb_icon {
   max-width: 24px;
   height: auto;
   background: none;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_tooltip {
-  background: #333333;
+#drupal-off-canvas .blb_ui .blb_tab-content > .blb_tab-pane {
+  display: none;
+}
+
+#drupal-off-canvas .blb_ui .blb_tab-content > .active {
+  display: block;
+}
+
+#drupal-off-canvas .blb_ui .blb_tooltip {
+  background: #f8f9fa;
   top: 100%;
-  color: #ffffff;
+  color: #333333;
+  font-weight: bold;
   display: block;
   left: 50%;
   margin-left: -40px;
@@ -72,13 +78,15 @@
   pointer-events: none;
   position: absolute;
   text-align: center;
-  width: 80px;
+  max-width: 80px;
   transform: translateY(10px);
   transition: all .25s ease-out;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+  border-radius: 2px;
+  white-space: normal;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_tooltip:before {
+#drupal-off-canvas .blb_ui .blb_tooltip:before {
   top: -20px;
   content: " ";
   display: block;
@@ -88,10 +96,10 @@
   width: 100%;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .blb_tooltip:after {
+#drupal-off-canvas .blb_ui .blb_tooltip:after {
   border-left: solid transparent 10px;
   border-right: solid transparent 10px;
-  border-bottom: solid #333333 10px;
+  border-bottom: solid #f8f9fa 10px;
   top: -10px;
   content: " ";
   height: 0;
@@ -113,7 +121,7 @@
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option {
   cursor: pointer !important;
   border: 1px solid #000000;
-  border-radius: 50%;
+  border-radius: 2px;
   font-size: 0.00001px;
   position: relative;
   display: inline-block;
@@ -149,11 +157,15 @@
 }
 
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option._none:after {
-  content: '\2613';
-  color: red;
-  font-size: 35px;
-  top: -8px;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  content: '';
   position: absolute;
+  background: url("data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjZjM1NjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZGlzcGxheTpub25lO30KPC9zdHlsZT48Zz48Zz48Zz48cGF0aCBkPSJNMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2Yy0wLjE5NS0wLjE5NS0wLjE5NS0wLjUxMiwwLTAuNzA3bDIwLTIwYzAuMTk1LTAuMTk1LDAuNTEyLTAuMTk1LDAuNzA3LDAgICAgIHMwLjE5NSwwLjUxMiwwLDAuNzA3bC0yMCwyMEMyLjI1NiwyMi40NTEsMi4xMjgsMjIuNSwyLDIyLjV6Ij48L3BhdGg+PC9nPjxnPjxwYXRoIGQ9Ik0yMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2bC0yMC0yMGMtMC4xOTUtMC4xOTUtMC4xOTUtMC41MTIsMC0wLjcwN3MwLjUxMi0wLjE5NSwwLjcwNywwbDIwLDIwICAgICBjMC4xOTUsMC4xOTUsMC4xOTUsMC41MTIsMCwwLjcwN0MyMi4yNTYsMjIuNDUxLDIyLjEyOCwyMi41LDIyLDIyLjV6Ij48L3BhdGg+PC9nPjwvZz48L2c+PC9zdmc+") center center no-repeat;
+  background-size: contain;
 }
 
 #drupal-off-canvas .media-library-item {

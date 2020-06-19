@@ -4,12 +4,16 @@ $gray-f8f: #f8f9fa;
 $gray-e2e: #e2e6ea;
 $gray-dae: #dae0e5;
 $gray-dbd: #dbdbdb;
+$gray-666: #666666;
+$gray-444: #444444;
 $gray-333: #333333;
 $gray-212: #212529;
 $black: #000000;
 
 
 #drupal-off-canvas {
+  width: 100% !important;
+
   // General styling.
   .form-composite {
     > legend, .label {
@@ -18,13 +22,12 @@ $black: #000000;
   }
 
   // Our Custom UI
-  .bootstrap_layout_builder_ui {
+  .blb_ui {
 
     @import "tabs";
+    @import "tooltips";
 
   }
-
-
 
   // Color field.
   .bootstrap_layout_builder_bg_color {
@@ -42,7 +45,7 @@ $black: #000000;
         &.option {
           cursor: pointer !important;
           border: 1px solid #000000;
-          border-radius: 50%;
+          border-radius: 2px;
           font-size: 0.00001px;
           position: relative;
           display: inline-block;
@@ -76,11 +79,15 @@ $black: #000000;
             background: $white !important;
 
             &:after {
-              content: '\2613';
-              color: red;
-              font-size: 35px;
-              top: -8px;
+              width: 20px;
+              height: 20px;
+              top: 50%;
+              left: 50%;
+              margin: -10px 0 0 -10px;
+              content: '';
               position: absolute;
+              background: url("data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjZjM1NjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZGlzcGxheTpub25lO30KPC9zdHlsZT48Zz48Zz48Zz48cGF0aCBkPSJNMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2Yy0wLjE5NS0wLjE5NS0wLjE5NS0wLjUxMiwwLTAuNzA3bDIwLTIwYzAuMTk1LTAuMTk1LDAuNTEyLTAuMTk1LDAuNzA3LDAgICAgIHMwLjE5NSwwLjUxMiwwLDAuNzA3bC0yMCwyMEMyLjI1NiwyMi40NTEsMi4xMjgsMjIuNSwyLDIyLjV6Ij48L3BhdGg+PC9nPjxnPjxwYXRoIGQ9Ik0yMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2bC0yMC0yMGMtMC4xOTUtMC4xOTUtMC4xOTUtMC41MTIsMC0wLjcwN3MwLjUxMi0wLjE5NSwwLjcwNywwbDIwLDIwICAgICBjMC4xOTUsMC4xOTUsMC4xOTUsMC41MTIsMCwwLjcwN0MyMi4yNTYsMjIuNDUxLDIyLjEyOCwyMi41LDIyLDIyLjV6Ij48L3BhdGg+PC9nPjwvZz48L2c+PC9zdmc+") center center no-repeat;
+              background-size: contain;
             }
           }
         }

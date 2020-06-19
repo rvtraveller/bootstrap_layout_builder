@@ -1,4 +1,6 @@
-$tooltip_width: 80px;
+//
+// Horizontal Icon Tabs
+//
 
 // Our icons/headings
 .blb_nav-tabs {
@@ -6,27 +8,15 @@ $tooltip_width: 80px;
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
-  //overflow-x: auto;
   margin: 0 -20px 20px -20px;
   width: calc(100% + 40px);
-  background: rgba($gray-212, .25);
-
-  &:after {
-    content: '';
-    width: 15px;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: calc(100% - -5px);
-    background: rgb(68, 68, 68);
-    background: linear-gradient(90deg, rgba(68, 68, 68, 0) 0%, rgba(68, 68, 68, 1) 100%);
-    position: absolute;
-  }
 
   li {
+    flex: 1 1 auto;
     margin: 0 1px;
 
     a {
+      cursor: pointer;
       position: relative;
       padding: .5rem .75rem;
       min-height: 50px;
@@ -39,6 +29,11 @@ $tooltip_width: 80px;
       align-items: center;
       justify-content: center;
       transition: .2s background-color ease-in-out;
+
+      &.active,
+      &.active:hover {
+        background-color: $gray-444;
+      }
 
       &:hover {
         background: rgba($gray-212, .5);
@@ -59,45 +54,18 @@ $tooltip_width: 80px;
   background: none;
 }
 
-// Tooltips
-.blb_tooltip {
-  background: $gray-333;
-  top: 100%;
-  color: $white;
-  display: block;
-  left: 50%;
-  margin-left: -40px;
-  margin-top: 15px;
-  opacity: 0;
-  padding: 5px 10px;
-  pointer-events: none;
-  position: absolute;
-  text-align: center;
-  width: 80px;
-  transform: translateY(10px);
-  transition: all .25s ease-out;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+//
+// Tabs Panes
+//
+// Tabbable tabs
+//
+// Hide tabbable panes to start, show them when `.active`
 
-  &:before {
-    top: -20px;
-    content: " ";
-    display: block;
-    height: 20px;
-    left: 0;
-    position: absolute;
-    width: 100%;
+.blb_tab-content {
+  > .blb_tab-pane {
+    display: none;
   }
-
-  &:after {
-    border-left: solid transparent 10px;
-    border-right: solid transparent 10px;
-    border-bottom: solid $gray-333 10px;
-    top: -10px;
-    content: " ";
-    height: 0;
-    left: 50%;
-    margin-left: -13px;
-    position: absolute;
-    width: 0;
+  > .active {
+    display: block;
   }
 }
