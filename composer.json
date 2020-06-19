@@ -7,7 +7,6 @@
   "require": {
       "drupal/core": "^8.7.7 || ^9",
       "drupal/media_library_form_element": "^1.0",
-      "drupal/media_library_theme_reset": "^1.0",
-      "drupal/field_group": "^3.0"
+      "drupal/media_library_theme_reset": "^1.0"
   }
 }

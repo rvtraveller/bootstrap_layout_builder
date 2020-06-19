@@ -172,9 +172,79 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
+    // Our main set of tabs
+    $form['ui'] = array(
+      '#type' => 'container',
+      '#prefix' => '<div class="bootstrap_layout_builder_ui">',
+      '#suffix' => '</div>',
+      '#weight' => -100,
+      // @todo: states don't seem to work on horizontal tabs?
+      '#states' => [
+        'visible' => [
+          ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
+        ],
+      ],
+    );
+
+    $tabs = array(
+      array(
+        'machine_name' => 'background',
+        'icon' => 'bg.svg',
+        'title' => $this->t('Background'),
+      ),
+      array(
+        'machine_name' => 'layout',
+        'icon' => 'layout.svg',
+        'title' => $this->t('Layout'),
+      ),
+      array(
+        'machine_name' => 'settings',
+        'icon' => 'default.svg',
+        'title' => $this->t('Settings'),
+      ),
+    );
+
+    // Create our tabs from above.
+    $form['ui']['nav_tabs'] = array(
+      '#type' => 'html_tag',
+      '#tag' => 'ul',
+      '#attributes' => [
+        'class' => 'blb_nav-tabs',
+        'id' => 'blb_nav-tabs',
+        'role' => 'tablist'
+      ],
+    );
+
+    $form['ui']['nav_content'] = array(
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => 'blb_nav-content',
+        'id' => 'blb_nav-tabContent'
+      ],
+    );
+
+    // Create our tab & tab panes.
+    foreach ($tabs as $tab) {
+      $form['ui']['nav_tabs'][$tab['machine_name']] = array(
+        '#type' => 'inline_template',
+        '#template' => '<li><a href="#blb_{{ title|clean_class }}">{{ icon }}<div class="blb_tooltip" role="tooltip">{{ title }}</div></a></li>',
+        '#context' => [
+          'title' => $tab['title'],
+          'icon' => t('<img class="blb_icon" src="/' . drupal_get_path('module', 'bootstrap_layout_builder') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg') . '" />'),
+        ],
+      );
+
+      $form['ui']['nav_content'][$tab['machine_name']] = array(
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => 'blb_tab-pane',
+        ],
+      );
+    }
+
     // Check if section settings visible.
     if (!$this->sectionSettingsIsHidden()) {
-      $form['has_container'] = [
+      $form['ui']['nav_content']['settings']['has_container'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Add Container'),
         '#default_value' => (int) !empty($this->configuration['container']) ? TRUE : FALSE,
@@ -185,7 +255,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         'container-fluid' => $this->t('Container fluid'),
       ];
 
-      $form['container_type'] = [
+      $form['ui']['nav_content']['settings']['container_type'] = [
         '#type' => 'select',
         '#title' => $this->t('Container type'),
         '#options' => $container_types,
@@ -197,57 +267,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-      $form['ui'] = array(
-        '#type' => 'horizontal_tabs',
-        '#tree' => TRUE,
-        '#prefix' => '<div class="bootstrap_layout_builder_ui">',
-        '#suffix' => '</div>',
-        // @todo: states don't seem to work on horizontal tabs?
-        '#states' => [
-          'visible' => [
-            ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
-          ],
-        ],
-      );
-
-      $tabs = array(
-        array(
-          'machine_name' => 'background',
-          'icon' => 'bg.svg',
-          'title' => $this->t('Background'),
-        ),
-        array(
-          'machine_name' => 'layout',
-          'icon' => 'layout.svg',
-          'title' => $this->t('Layout'),
-        ),
-        array(
-          'machine_name' => 'settings',
-          'icon' => 'default.svg',
-          'title' => $this->t('Settings'),
-        ),
-      );
-
-      foreach ($tabs as $tab) {
-        $form['ui'][$tab['machine_name']] = array(
-          '#type' => 'details',
-          '#title' => $tab['title'],
-          '#attributes' => [
-            'data-layout-plugin' => $tab['title'],
-          ],
-          '#description' => t('<img class="bootstrap_layout_builder_icon" src="/' . drupal_get_path('module', 'bootstrap_layout_builder') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg') . '" />'),
-          '#collapsible' => TRUE,
-          '#collapsed' => TRUE,
-//          '#states' => [
-//            'visible' => [
-//              ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
-//            ],
-//          ],
-        );
-      }
-
       // Background Settings
-      $form['ui']['background']['container_wrapper_bg_color_class'] = [
+      $form['ui']['nav_content']['background']['container_wrapper_bg_color_class'] = [
         '#type' => 'radios',
         '#options' => $this->getStyleOptions('background_colors'),
         '#title' => $this->t('Background color'),
@@ -261,8 +282,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           ],
         ],
       ];
-
-      $form['ui']['background']['container_wrapper_bg_media'] = [
+      $form['ui']['nav_content']['background']['container_wrapper_bg_media'] = [
         '#type' => 'media_library',
         '#title' => $this->t('Background media'),
         '#description' => $this->t('Background media'),
@@ -271,35 +291,35 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#prefix' => '<hr />',
       ];
 
-      // Container Classes
-      $form['ui']['layout']['container'] = [
+      // Layout > Container Classes
+      $form['ui']['nav_content']['layout']['container'] = [
         '#type' => 'details',
         '#title' => $this->t('Container Settings'),
         '#open' => FALSE,
       ];
-
-      $form['ui']['layout']['container']['container_wrapper_classes'] = [
+      $form['ui']['nav_content']['layout']['container']['container_wrapper_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Container wrapper classes'),
         '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
         '#default_value' => $this->configuration['container_wrapper_classes'],
       ];
 
-      // Row Classes
-      $form['ui']['layout']['row'] = [
+      // Layout > Row Classes
+      $form['ui']['nav_content']['layout']['row'] = [
         '#type' => 'details',
         '#title' => $this->t('Row Settings'),
         '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
         '#open' => FALSE,
       ];
-      $form['ui']['layout']['row']['section_classes'] = [
+      $form['ui']['nav_content']['layout']['row']['section_classes'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Row classes'),
         '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
         '#default_value' => $this->configuration['section_classes'],
       ];
 
-      $form['ui']['layout']['regions'] = [
+      // Layout > Regions
+      $form['ui']['nav_content']['layout']['regions'] = [
         '#type' => 'details',
         '#title' => $this->t('Columns Settings'),
         '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
@@ -307,7 +327,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ];
 
       foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
-        $form['ui']['layout']['regions'][$region_name . '_classes'] = [
+        $form['ui']['nav_content']['layout']['regions'][$region_name . '_classes'] = [
           '#type' => 'textfield',
           '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
           '#default_value' => $this->configuration['regions_classes'][$region_name],

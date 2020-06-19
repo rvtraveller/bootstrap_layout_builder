@@ -2,11 +2,17 @@
   font-weight: normal;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs {
-  border: none;
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin: 0 -20px 20px -20px;
+  width: calc(100% + 40px);
+  background: rgba(33, 37, 41, 0.25);
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs:after {
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs:after {
   content: '';
   width: 15px;
   top: 0;
@@ -18,27 +24,17 @@
   position: absolute;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  overflow-x: scroll;
-  margin: 0 -20px 20px -20px;
-  width: calc(100% + 40px);
-  background: rgba(33, 37, 41, 0.25);
-}
-
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list li {
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li {
   margin: 0 1px;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list li a {
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li a {
+  position: relative;
+  padding: .5rem .75rem;
   min-height: 50px;
   min-width: 16.666%;
   background: #212529;
   font-size: 10px;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: flex;
@@ -47,17 +43,62 @@
   transition: .2s background-color ease-in-out;
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list li a * {
-  background: none;
-}
-
-#drupal-off-canvas .bootstrap_layout_builder_ui .horizontal-tabs-list li a:hover {
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li a:hover {
   background: rgba(33, 37, 41, 0.5);
 }
 
-#drupal-off-canvas .bootstrap_layout_builder_icon {
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_nav-tabs li a:hover .blb_tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0px);
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_icon {
   max-width: 24px;
   height: auto;
+  background: none;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_tooltip {
+  background: #333333;
+  top: 100%;
+  color: #ffffff;
+  display: block;
+  left: 50%;
+  margin-left: -40px;
+  margin-top: 15px;
+  opacity: 0;
+  padding: 5px 10px;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+  width: 80px;
+  transform: translateY(10px);
+  transition: all .25s ease-out;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_tooltip:before {
+  top: -20px;
+  content: " ";
+  display: block;
+  height: 20px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+#drupal-off-canvas .bootstrap_layout_builder_ui .blb_tooltip:after {
+  border-left: solid transparent 10px;
+  border-right: solid transparent 10px;
+  border-bottom: solid #333333 10px;
+  top: -10px;
+  content: " ";
+  height: 0;
+  left: 50%;
+  margin-left: -13px;
+  position: absolute;
+  width: 0;
 }
 
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios input {
