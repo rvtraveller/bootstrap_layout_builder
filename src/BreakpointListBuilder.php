@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityInterface;
 /**
  * Provides a listing of layout builder breakpoints entities.
  */
-class BootstrapLayoutBuilderBreakpointListBuilder extends DraggableListBuilder {
+class BreakpointListBuilder extends DraggableListBuilder {
 
   /**
    * {@inheritdoc}

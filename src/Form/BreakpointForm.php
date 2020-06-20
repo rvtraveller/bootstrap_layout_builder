@@ -9,9 +9,9 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class BootstrapLayoutBuilderBreakpointForm.
+ * Class BreakpointForm.
  */
-class BootstrapLayoutBuilderBreakpointForm extends EntityForm implements ContainerInjectionInterface {
+class BreakpointForm extends EntityForm implements ContainerInjectionInterface {
 
   /**
    * The messenger.
@@ -45,7 +45,7 @@ class BootstrapLayoutBuilderBreakpointForm extends EntityForm implements Contain
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    /** @var \Drupal\bootstrap_layout_builder\BootstrapLayoutBuilderBreakpointInterface $breakpoint */
+    /** @var \Drupal\bootstrap_layout_builder\BreakpointInterface $breakpoint */
     $breakpoint = $this->entity;
 
     $form['label'] = [
@@ -60,7 +60,7 @@ class BootstrapLayoutBuilderBreakpointForm extends EntityForm implements Contain
       '#type' => 'machine_name',
       '#default_value' => $breakpoint->id(),
       '#machine_name' => [
-        'exists' => '\Drupal\bootstrap_layout_builder\Entity\BootstrapLayoutBuilderBreakpoint::load',
+        'exists' => '\Drupal\bootstrap_layout_builder\Entity\Breakpoint::load',
       ],
       '#disabled' => !$breakpoint->isNew(),
     ];

@@ -9,7 +9,7 @@ use Drupal\Core\Url;
 /**
  * Builds the form to delete Bootstrap Layout Builder breakpoints entities.
  */
-class BootstrapLayoutBuilderBreakpointDeleteForm extends EntityConfirmFormBase {
+class BreakpointDeleteForm extends EntityConfirmFormBase {
 
   /**
    * {@inheritdoc}
@@ -22,7 +22,7 @@ class BootstrapLayoutBuilderBreakpointDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.blb_breakpoints.collection');
+    return new Url('entity.blb_breakpoint.collection');
   }
 
   /**

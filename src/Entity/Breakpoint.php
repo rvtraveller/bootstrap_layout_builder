@@ -3,25 +3,25 @@
 namespace Drupal\bootstrap_layout_builder\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\bootstrap_layout_builder\BootstrapLayoutBuilderBreakpointInterface;
+use Drupal\bootstrap_layout_builder\BreakpointInterface;
 
 /**
- * Defines the BootstrapLayoutBuilderBreakpoint config entity.
+ * Defines the Breakpoint config entity.
  *
  * @ConfigEntityType(
  *   id = "blb_breakpoint",
- *   label = @Translation("Bootstrap layout builder breakpoint"),
- *   label_collection = @Translation("Bootstrap layout builder breakpoints"),
- *   label_plural = @Translation("Bootstrap layout builder breakpoint"),
+ *   label = @Translation("Bootstrap Layout Builder Breakpoint"),
+ *   label_collection = @Translation("Bootstrap Layout Builder Breakpoints"),
+ *   label_plural = @Translation("Bootstrap Layout Builder Breakpoint"),
  *   handlers = {
  *     "route_provider" = {
  *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider"
  *     },
- *     "list_builder" = "Drupal\bootstrap_layout_builder\BootstrapLayoutBuilderBreakpointListBuilder",
+ *     "list_builder" = "Drupal\bootstrap_layout_builder\BreakpointListBuilder",
  *     "form" = {
- *       "add" = "Drupal\bootstrap_layout_builder\Form\BootstrapLayoutBuilderBreakpointForm",
- *       "edit" = "Drupal\bootstrap_layout_builder\Form\BootstrapLayoutBuilderBreakpointForm",
- *       "delete" = "Drupal\bootstrap_layout_builder\Form\BootstrapLayoutBuilderBreakpointDeleteForm"
+ *       "add" = "Drupal\bootstrap_layout_builder\Form\BreakpointForm",
+ *       "edit" = "Drupal\bootstrap_layout_builder\Form\BreakpointForm",
+ *       "delete" = "Drupal\bootstrap_layout_builder\Form\BreakpointDeleteForm"
  *     }
  *   },
  *   config_prefix = "breakpoint",
@@ -48,7 +48,7 @@ use Drupal\bootstrap_layout_builder\BootstrapLayoutBuilderBreakpointInterface;
  *   }
  * )
  */
-class BootstrapLayoutBuilderBreakpoint extends ConfigEntityBase implements BootstrapLayoutBuilderBreakpointInterface {
+class Breakpoint extends ConfigEntityBase implements BreakpointInterface {
 
   /**
    * The Bootstrap layout Builder breakpoint ID.
@@ -97,6 +97,39 @@ class BootstrapLayoutBuilderBreakpoint extends ConfigEntityBase implements Boots
    */
   public function getStatus() {
     return $this->status;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getLayoutOptions($layout_id) {
+    $options = [];
+    $query = $this->entityTypeManager()->getStorage('blb_layout_option')->getQuery();
+    $blb_options = $query->condition('layout_id', $layout_id)->sort('weight', 'ASC')->execute();
+    foreach ($blb_options as $option_id) {
+      $option = $this->entityTypeManager()->getStorage('blb_layout_option')->load($option_id);
+      if (!in_array($this->id(), $option->getBreakpointsIds())) {
+        continue;
+      }
+      $options[$option->getStructureId()] = $option->label();
+    }
+
+    return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getClassByPosition($key, $strucutre_id) {
+    $strucutre = substr($strucutre_id, strlen('blb_col_'));
+    $strucutre = explode('_', $strucutre);
+    // Full width case.
+    $sufix = '12';
+    if (count($strucutre) > 1) {
+      $sufix = $strucutre[$key];
+    }
+    $class = $this->getBaseClass() . '-' . $sufix;
+    return $class;
   }
 
 }
