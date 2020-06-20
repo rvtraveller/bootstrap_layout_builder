@@ -173,19 +173,12 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $form = parent::buildConfigurationForm($form, $form_state);
     $form['#attributes']['classes'][] = 'bootstrap_layout_builder_ui';
 
-    if (!$this->sectionSettingsIsHidden()) {
-
       // Our main set of tabs
       $form['ui'] = array(
         '#type' => 'container',
         '#weight' => -100,
         '#attributes' => [
           'class' => 'blb_ui',
-        ],
-        '#states' => [
-          'visible' => [
-            ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
-          ],
         ],
       );
 
@@ -212,6 +205,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           'title' => $this->t('Advanced Settings'),
         ),
       );
+
+      if ($this->sectionSettingsIsHidden()) {
+        array_pop($tabs);
+      }
 
       // Create our tabs from above.
       $form['ui']['nav_tabs'] = array(
@@ -310,57 +307,57 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ];
 
       // Advanced Settings > Classes
-      $form['ui']['tab_content']['settings']['container'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Container Settings'),
-        '#open' => FALSE,
-      ];
-
-      $form['ui']['tab_content']['settings']['container']['container_wrapper_classes'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Container wrapper classes'),
-        '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
-        '#default_value' => $this->configuration['container_wrapper_classes'],
-      ];
-
-      $form['ui']['tab_content']['settings']['row'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Row Settings'),
-        '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
-        '#open' => FALSE,
-      ];
-
-      $form['ui']['tab_content']['settings']['row']['section_classes'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Row classes'),
-        '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
-        '#default_value' => $this->configuration['section_classes'],
-      ];
-
-      $form['ui']['tab_content']['settings']['regions'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Columns Settings'),
-        '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
-        '#open' => FALSE,
-      ];
-
-      foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
-        $form['ui']['tab_content']['settings']['regions'][$region_name . '_classes'] = [
-          '#type' => 'textfield',
-          '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
-          '#default_value' => $this->configuration['regions_classes'][$region_name],
+      if (!$this->sectionSettingsIsHidden()) {
+        $form['ui']['tab_content']['settings']['container'] = [
+          '#type' => 'details',
+          '#title' => $this->t('Container Settings'),
+          '#open' => FALSE,
         ];
-      }
 
+        $form['ui']['tab_content']['settings']['container']['container_wrapper_classes'] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Container wrapper classes'),
+          '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
+          '#default_value' => $this->configuration['container_wrapper_classes'],
+        ];
+
+        $form['ui']['tab_content']['settings']['row'] = [
+          '#type' => 'details',
+          '#title' => $this->t('Row Settings'),
+          '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
+          '#open' => FALSE,
+        ];
+
+        $form['ui']['tab_content']['settings']['row']['section_classes'] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Row classes'),
+          '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
+          '#default_value' => $this->configuration['section_classes'],
+        ];
+
+        $form['ui']['tab_content']['settings']['regions'] = [
+          '#type' => 'details',
+          '#title' => $this->t('Columns Settings'),
+          '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
+          '#open' => FALSE,
+        ];
+
+        foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
+          $form['ui']['tab_content']['settings']['regions'][$region_name . '_classes'] = [
+            '#type' => 'textfield',
+            '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
+            '#default_value' => $this->configuration['regions_classes'][$region_name],
+          ];
+        }
+      }
 
       // Effects
       $form['ui']['tab_content']['effects']['message'] = [
         '#type' => 'inline_template',
         '#template' => '<small>Transition Effects Coming Soon...</small>',
       ];
-    }
 
-    // Attache the Bootstrap Layout Builder base libraray.
+    // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/base';
     return $form;
   }
