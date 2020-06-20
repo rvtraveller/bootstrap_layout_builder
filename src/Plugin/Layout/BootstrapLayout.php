@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
 
@@ -28,6 +29,13 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   protected $configFactory;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a new class instance.
    *
    * @param array $configuration
@@ -38,10 +46,13 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Config factory service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $configFactory;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -52,7 +63,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -110,8 +122,9 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     // Regions classes.
     if ($this->configuration['regions_classes']) {
       foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
-        $region_classes = explode(' ', $this->configuration['regions_classes'][$region_name]);
-        $build[$region_name]['#attributes']['class'] = $region_classes;
+        $region_classes = $this->configuration['regions_classes'][$region_name];
+        $build[$region_name]['#attributes']['class'] = $this->configuration['layout_regions_classes'][$region_name];
+        $build[$region_name]['#attributes']['class'][] = $region_classes;
       }
     }
 
@@ -142,8 +155,12 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       'container' => '',
       // Section refer to the div that contains row in bootstrap.
       'section_classes' => '',
-      // Region refer to the div that contains Col in bootstrap.
+      // Region refer to the div that contains Col in bootstrap "Advanced mode".
       'regions_classes' => $regions_classes,
+      // Array of breakpoints and the value of its option.
+      'breakpoints' => [],
+      // The region refer to the div that contains Col in bootstrap.
+      'layout_regions_classes' => [],
     ];
   }
 
@@ -295,6 +312,20 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#default_value' => $this->configuration['section_classes'],
       ];
 
+      // @TODO Style the select list.
+      $layout_id = $this->getPluginDefinition()->id();
+      $breakpoints = $this->entityTypeManager->getStorage('blb_breakpoint')->getQuery()->sort('weight', 'ASC')->execute();
+      foreach ($breakpoints as $breakpoint_id) {
+        $breakpoint = $this->entityTypeManager->getStorage('blb_breakpoint')->load($breakpoint_id);
+        $layout_options = $breakpoint->getLayoutOptions($layout_id);
+        $form['breakpoints'][$breakpoint_id] = [
+          '#type' => 'select',
+          '#title' => $breakpoint->label(),
+          '#options' => $layout_options,
+          '#default_value' => $this->configuration['breakpoints'][$breakpoint_id] ?: '',
+        ];
+      }
+
       $form['regions'] = [
         '#type' => 'details',
         '#title' => $this->t('Columns Settings'),
@@ -317,6 +348,36 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   }
 
   /**
+   * Returns region class of a breakpoint.
+   *
+   * @param int $key
+   *   The position of region.
+   * @param array $breakpoints
+   *   The layout active breakpoints.
+   *
+   * @return array
+   *   The region classes of all breakpoints.
+   */
+  public function getRegionClasses(int $key, array $breakpoints) {
+    $classes = [];
+    foreach ($breakpoints as $breakpoint_id => $strucutre_id) {
+      $breakpoint = $this->entityTypeManager->getStorage('blb_breakpoint')->load($breakpoint_id);
+      $classes[] = $breakpoint->getClassByPosition($key, $strucutre_id);
+    }
+    return $classes;
+  }
+
+  /**
+   * Save breakpoints to the configuration.
+   *
+   * @param array $breakpoints
+   *   The layout active breakpoints.
+   */
+  public function saveBreakpoints(array $breakpoints) {
+    $this->configuration['breakpoints'] = $breakpoints;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
@@ -334,7 +395,14 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       }
 
       $this->configuration['section_classes'] = $form_state->getValue('section_classes');
-      foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
+      $breakpoints = $form_state->getValue('breakpoints');
+      // Save breakpoints configuration.
+      $this->saveBreakpoints($breakpoints);
+
+      foreach ($this->getPluginDefinition()->getRegionNames() as $key => $region_name) {
+        // Save layout region classes.
+        $this->configuration['layout_regions_classes'][$region_name] = $this->getRegionClasses($key, $breakpoints);
+        // Get the additonal classes from advanced mode.
         $this->configuration['regions_classes'][$region_name] = $form_state->getValue('regions')[$region_name . '_classes'];
       }
     }

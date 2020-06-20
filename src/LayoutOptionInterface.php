@@ -89,4 +89,5 @@ interface LayoutOptionInterface extends ConfigEntityInterface {
    *   The breakpoints labels.
    */
   public function getBreakpointsLabels();
+
 }

@@ -26,6 +26,7 @@ class BootstrapLayoutDeriver extends DeriverBase {
       $this->derivatives['blb_col_' . $i] = new LayoutDefinition([
         'class' => BootstrapLayout::class,
         'label' => $label,
+        'id' => 'blb_col_' . $i,
         'category' => 'Bootstrap',
         'regions' => $this->getRegions($i),
         'theme_hook' => 'row_columns',
