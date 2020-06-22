@@ -2,6 +2,147 @@
   font-weight: normal;
 }
 
+#drupal-off-canvas .blb_ui .blb_nav-tabs {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin: 0 -20px 20px -20px;
+  width: calc(100% + 40px);
+}
+
+#drupal-off-canvas .blb_ui .blb_nav-tabs li {
+  flex: 1 1 auto;
+  margin: 0 1px;
+}
+
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a {
+  cursor: pointer;
+  position: relative;
+  padding: .5rem .75rem;
+  min-height: 50px;
+  min-width: 16.666%;
+  background: #212529;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: .2s background-color ease-in-out;
+}
+
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a.active, #drupal-off-canvas .blb_ui .blb_nav-tabs li a.active:hover {
+  background-color: #444444;
+}
+
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a:hover {
+  background: rgba(33, 37, 41, 0.5);
+}
+
+#drupal-off-canvas .blb_ui .blb_nav-tabs li a:hover .blb_tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0px);
+}
+
+#drupal-off-canvas .blb_ui .blb_icon {
+  max-width: 24px;
+  height: auto;
+  background: none;
+}
+
+#drupal-off-canvas .blb_ui .blb_tab-content > .blb_tab-pane {
+  display: none;
+}
+
+#drupal-off-canvas .blb_ui .blb_tab-content > .active {
+  display: block;
+}
+
+#drupal-off-canvas .blb_ui .blb_tooltip {
+  background: #f8f9fa;
+  top: 100%;
+  color: #333333;
+  font-weight: bold;
+  display: block;
+  left: 50%;
+  margin-left: -37.5px;
+  margin-top: 15px;
+  opacity: 0;
+  padding: 5px 10px;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+  width: 75px;
+  transform: translateY(10px);
+  transition: all .25s ease-out;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+  border-radius: 2px;
+  white-space: normal;
+}
+
+#drupal-off-canvas .blb_ui .blb_tooltip:before {
+  top: -20px;
+  content: " ";
+  display: block;
+  height: 20px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+#drupal-off-canvas .blb_ui .blb_tooltip:after {
+  border-left: solid transparent 10px;
+  border-right: solid transparent 10px;
+  border-bottom: solid #f8f9fa 10px;
+  top: -10px;
+  content: " ";
+  height: 0;
+  left: 50%;
+  margin-left: -13px;
+  position: absolute;
+  width: 0;
+}
+
+#drupal-off-canvas .blb_ui .lbl_container_type .form-radios {
+  display: flex;
+}
+
+#drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+#drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type input {
+  opacity: 0;
+  position: absolute;
+}
+
+#drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type input + label {
+  border: 2px solid white;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+#drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type input:checked + label {
+  color: #444444;
+  background-color: #ffffff;
+}
+
+#drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type:first-child input + label {
+  border-radius: 8px 0 0 8px;
+}
+
+#drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type:last-child input + label {
+  border-radius: 0 8px 8px 0;
+}
+
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios input {
   visibility: hidden;
   position: absolute;
@@ -14,7 +155,7 @@
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option {
   cursor: pointer !important;
   border: 1px solid #000000;
-  border-radius: 50%;
+  border-radius: 2px;
   font-size: 0.00001px;
   position: relative;
   display: inline-block;
@@ -50,11 +191,15 @@
 }
 
 #drupal-off-canvas .bootstrap_layout_builder_bg_color .form-radios label.option._none:after {
-  content: '\2613';
-  color: red;
-  font-size: 35px;
-  top: -8px;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  content: '';
   position: absolute;
+  background: url("data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjZjM1NjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZGlzcGxheTpub25lO30KPC9zdHlsZT48Zz48Zz48Zz48cGF0aCBkPSJNMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2Yy0wLjE5NS0wLjE5NS0wLjE5NS0wLjUxMiwwLTAuNzA3bDIwLTIwYzAuMTk1LTAuMTk1LDAuNTEyLTAuMTk1LDAuNzA3LDAgICAgIHMwLjE5NSwwLjUxMiwwLDAuNzA3bC0yMCwyMEMyLjI1NiwyMi40NTEsMi4xMjgsMjIuNSwyLDIyLjV6Ij48L3BhdGg+PC9nPjxnPjxwYXRoIGQ9Ik0yMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2bC0yMC0yMGMtMC4xOTUtMC4xOTUtMC4xOTUtMC41MTIsMC0wLjcwN3MwLjUxMi0wLjE5NSwwLjcwNywwbDIwLDIwICAgICBjMC4xOTUsMC4xOTUsMC4xOTUsMC41MTIsMCwwLjcwN0MyMi4yNTYsMjIuNDUxLDIyLjEyOCwyMi41LDIyLDIyLjV6Ij48L3BhdGg+PC9nPjwvZz48L2c+PC9zdmc+") center center no-repeat;
+  background-size: contain;
 }
 
 #drupal-off-canvas .media-library-item {

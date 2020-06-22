@@ -237,44 +237,118 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
+    $form['#attributes']['classes'][] = 'bootstrap_layout_builder_ui';
 
-    // Check if section settings visible.
-    if (!$this->sectionSettingsIsHidden()) {
-      $form['has_container'] = [
+      // Our main set of tabs
+      $form['ui'] = array(
+        '#type' => 'container',
+        '#weight' => -100,
+        '#attributes' => [
+          'class' => 'blb_ui',
+        ],
+      );
+
+      $tabs = array(
+        array(
+          'machine_name' => 'appearance',
+          'icon' => 'appearance.svg',
+          'title' => $this->t('Look & Feel'),
+          'active' => true,
+        ),
+        array(
+          'machine_name' => 'layout',
+          'icon' => 'layout.svg',
+          'title' => $this->t('Layout'),
+        ),
+        array(
+          'machine_name' => 'effects',
+          'icon' => 'effects.svg',
+          'title' => $this->t('Effects'),
+        ),
+        array(
+          'machine_name' => 'settings',
+          'icon' => 'settings.svg',
+          'title' => $this->t('Advanced Settings'),
+        ),
+      );
+
+      if ($this->sectionSettingsIsHidden()) {
+        array_pop($tabs);
+      }
+
+      // Create our tabs from above.
+      $form['ui']['nav_tabs'] = array(
+        '#type' => 'html_tag',
+        '#tag' => 'ul',
+        '#attributes' => [
+          'class' => 'blb_nav-tabs',
+          'id' => 'blb_nav-tabs',
+          'role' => 'tablist'
+        ],
+      );
+
+      $form['ui']['tab_content'] = array(
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => 'blb_tab-content',
+          'id' => 'blb_tabContent'
+        ],
+      );
+
+      // Create our tab & tab panes.
+      foreach ($tabs as $tab) {
+        $form['ui']['nav_tabs'][$tab['machine_name']] = array(
+          '#type' => 'inline_template',
+          '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}">{{ icon }}<div class="blb_tooltip" role="tooltip">{{ title }}</div></a></li>',
+          '#context' => [
+            'title' => $tab['title'],
+            'target' => $tab['machine_name'],
+            'active' => $tab['active'] == true ? 'active' : '',
+            'icon' => t('<img class="blb_icon" src="/' . drupal_get_path('module', 'bootstrap_layout_builder') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg') . '" />'),
+          ],
+        );
+
+        $form['ui']['tab_content'][$tab['machine_name']] = array(
+          '#type' => 'container',
+          '#attributes' => [
+            'class' => [
+              'blb_tab-pane',
+              'blb_tab-pane--' . $tab['machine_name'],
+              $tab['active'] == true ? 'active' : '',
+            ],
+          ],
+        );
+      }
+
+      // Check if section settings visible.
+      $form['ui']['tab_content']['layout']['has_container'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Add Container'),
         '#default_value' => (int) !empty($this->configuration['container']) ? TRUE : FALSE,
       ];
 
       $container_types = [
-        'container' => $this->t('Container'),
-        'container-fluid' => $this->t('Container fluid'),
+        'container' => $this->t('Contained'),
+        'container-fluid' => $this->t('Full Width'),
       ];
 
-      $form['container_type'] = [
-        '#type' => 'select',
+      $form['ui']['tab_content']['layout']['container_type'] = [
+        '#type' => 'radios',
         '#title' => $this->t('Container type'),
         '#options' => $container_types,
         '#default_value' => !empty($this->configuration['container']) ? $this->configuration['container'] : 'container',
+        '#attributes' => [
+          'class' => ['lbl_container_type'],
+        ],
         '#states' => [
           'visible' => [
-            ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
+            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
           ],
         ],
       ];
 
-      $form['background'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Background'),
-        '#open' => FALSE,
-        '#states' => [
-          'visible' => [
-            ':input[name="layout_settings[has_container]"]' => ['checked' => TRUE],
-          ],
-        ],
-      ];
-
-      $form['background']['container_wrapper_bg_color_class'] = [
+      // Background Colors
+      $form['ui']['tab_content']['appearance']['container_wrapper_bg_color_class'] = [
         '#type' => 'radios',
         '#options' => $this->getStyleOptions('background_colors'),
         '#title' => $this->t('Background color'),
@@ -289,7 +363,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         ],
       ];
 
-      $form['background']['container_wrapper_bg_media'] = [
+      $form['ui']['tab_content']['appearance']['container_wrapper_bg_media'] = [
         '#type' => 'media_library',
         '#title' => $this->t('Background media'),
         '#description' => $this->t('Background media'),
@@ -298,19 +372,20 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#prefix' => '<hr />',
       ];
 
-      $form['container_wrapper_classes'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Container wrapper classes'),
-        '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
-        '#default_value' => $this->configuration['container_wrapper_classes'],
-      ];
+      // Advanced Settings > Classes
+      if (!$this->sectionSettingsIsHidden()) {
+        $form['ui']['tab_content']['settings']['container'] = [
+          '#type' => 'details',
+          '#title' => $this->t('Container Settings'),
+          '#open' => FALSE,
+        ];
 
-      $form['section_classes'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Row classes'),
-        '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
-        '#default_value' => $this->configuration['section_classes'],
-      ];
+        $form['ui']['tab_content']['settings']['container']['container_wrapper_classes'] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Container wrapper classes'),
+          '#description' => $this->t('Add classes separated by space. Ex: bg-warning py-5.'),
+          '#default_value' => $this->configuration['container_wrapper_classes'],
+        ];
 
       // @TODO Style the select list.
       $layout_id = $this->getPluginDefinition()->id();
@@ -332,17 +407,44 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
         '#open' => TRUE,
       ];
-
-      foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
-        $form['regions'][$region_name . '_classes'] = [
-          '#type' => 'textfield',
-          '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
-          '#default_value' => $this->configuration['regions_classes'][$region_name],
+        $form['ui']['tab_content']['settings']['row'] = [
+          '#type' => 'details',
+          '#title' => $this->t('Row Settings'),
+          '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
+          '#open' => FALSE,
         ];
+
+        $form['ui']['tab_content']['settings']['row']['section_classes'] = [
+          '#type' => 'textfield',
+          '#title' => $this->t('Row classes'),
+          '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
+          '#default_value' => $this->configuration['section_classes'],
+        ];
+
+        $form['ui']['tab_content']['settings']['regions'] = [
+          '#type' => 'details',
+          '#title' => $this->t('Columns Settings'),
+          '#description' => $this->t('Add classes separated by space. Ex: col mb-5 py-3.'),
+          '#open' => FALSE,
+        ];
+
+        foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
+          $form['ui']['tab_content']['settings']['regions'][$region_name . '_classes'] = [
+            '#type' => 'textfield',
+            '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
+            '#default_value' => $this->configuration['regions_classes'][$region_name],
+          ];
+        }
       }
-    }
 
     // Attach the Bootstrap Layout Builder base libraray.
+      // Effects
+      $form['ui']['tab_content']['effects']['message'] = [
+        '#type' => 'inline_template',
+        '#template' => '<small>Transition Effects Coming Soon...</small>',
+      ];
+
+    // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/base';
     return $form;
   }

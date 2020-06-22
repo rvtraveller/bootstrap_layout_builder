@@ -1,9 +1,32 @@
+// Colours
+$white: #ffffff;
+$gray-f8f: #f8f9fa;
+$gray-e2e: #e2e6ea;
+$gray-dae: #dae0e5;
+$gray-dbd: #dbdbdb;
+$gray-666: #666666;
+$gray-444: #444444;
+$gray-333: #333333;
+$gray-212: #212529;
+$black: #000000;
+
+
 #drupal-off-canvas {
+
   // General styling.
   .form-composite {
     > legend, .label {
       font-weight: normal;
     }
+  }
+
+  // Our Custom UI
+  .blb_ui {
+
+    @import "tabs";
+    @import "tooltips";
+    @import "layout";
+
   }
 
   // Color field.
@@ -12,6 +35,7 @@
       input {
         visibility: hidden;
         position: absolute;
+
         &:checked + label.option {
           border: 2px solid #000000;
         }
@@ -21,7 +45,7 @@
         &.option {
           cursor: pointer !important;
           border: 1px solid #000000;
-          border-radius: 50%;
+          border-radius: 2px;
           font-size: 0.00001px;
           position: relative;
           display: inline-block;
@@ -31,9 +55,11 @@
           margin: 5px 5px 5px 0;
           padding: 0;
           white-space: nowrap;
+
           &:hover {
             opacity: 0.8;
           }
+
           &:after {
             display: table;
             position: absolute;
@@ -48,14 +74,20 @@
             width: 100%;
             height: 100%;
           }
+
           &._none {
-            background: #ffffff !important;
+            background: $white !important;
+
             &:after {
-              content: '\2613';
-              color: red;
-              font-size: 35px;
-              top: -8px;
+              width: 20px;
+              height: 20px;
+              top: 50%;
+              left: 50%;
+              margin: -10px 0 0 -10px;
+              content: '';
               position: absolute;
+              background: url("data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjZjM1NjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZGlzcGxheTpub25lO30KPC9zdHlsZT48Zz48Zz48Zz48cGF0aCBkPSJNMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2Yy0wLjE5NS0wLjE5NS0wLjE5NS0wLjUxMiwwLTAuNzA3bDIwLTIwYzAuMTk1LTAuMTk1LDAuNTEyLTAuMTk1LDAuNzA3LDAgICAgIHMwLjE5NSwwLjUxMiwwLDAuNzA3bC0yMCwyMEMyLjI1NiwyMi40NTEsMi4xMjgsMjIuNSwyLDIyLjV6Ij48L3BhdGg+PC9nPjxnPjxwYXRoIGQ9Ik0yMiwyMi41Yy0wLjEyOCwwLTAuMjU2LTAuMDQ5LTAuMzU0LTAuMTQ2bC0yMC0yMGMtMC4xOTUtMC4xOTUtMC4xOTUtMC41MTIsMC0wLjcwN3MwLjUxMi0wLjE5NSwwLjcwNywwbDIwLDIwICAgICBjMC4xOTUsMC4xOTUsMC4xOTUsMC41MTIsMCwwLjcwN0MyMi4yNTYsMjIuNDUxLDIyLjEyOCwyMi41LDIyLDIyLjV6Ij48L3BhdGg+PC9nPjwvZz48L2c+PC9zdmc+") center center no-repeat;
+              background-size: contain;
             }
           }
         }
@@ -71,13 +103,15 @@
     position: relative;
     justify-content: center;
     vertical-align: top;
-    border: 1px solid #dbdbdb;
+    border: 1px solid $gray-dbd;
     margin: 0 auto;
     background: #fff;
     transition: border-color 0.2s, color 0.2s, background 0.2s;
+
     *, *:not(div) {
       background: transparent;
     }
+
     input[type="submit"].button.media-library-item__remove {
       position: absolute;
       z-index: 1;
@@ -94,23 +128,27 @@
       border: 2px solid #ccc;
       border-radius: 20px;
       background: url(../images/ex.svg) #fff center no-repeat;
-      -webkit-background-size: 16px 16px ;
+      -webkit-background-size: 16px 16px;
       background-size: 16px 16px;
       text-shadow: none;
+
       &:hover, &:focus {
         background: url(../images/ex_dark.svg) #fff center no-repeat;
-      } 
+      }
+
       &.button {
         &:disabled, &:disabled:active, &:hover, &:focus {
           background: url(../images/ex_dark.svg) #fff center no-repeat;
         }
       }
     }
+
     .js-click-to-select-trigger {
       overflow: hidden;
       cursor: pointer;
     }
   }
+
   .media-library-views-form,
   .media-library-selection,
   .media-library-add-form__selected-media .details-wrapper,
@@ -119,23 +157,28 @@
     display: flex;
     flex-wrap: wrap;
   }
+
   .media-library-selection {
     margin: 1em 0;
   }
+
   .media-library-item__preview {
     padding-bottom: 34px;
   }
+
   .media-library-form-element {
     .media-library-open-button {
-      color: #212529;
-      background-color: #f8f9fa;
-      border-color: #f8f9fa;
+      color: $gray-212;
+      background-color: $gray-f8f;
+      border-color: $gray-f8f;
+
       &:hover {
-        color: #212529;
-        background-color: #e2e6ea;
-        border-color: #dae0e5;
+        color: $gray-212;
+        background-color: $gray-e2e;
+        border-color: $gray-dae;
       }
     }
+
     .media-library-form-element-empty-text,
     .description,
     .js-hide,
@@ -143,6 +186,7 @@
       display: none !important;
     }
   }
+
   .media-library-item__attributes {
     position: absolute;
     bottom: 0;
@@ -152,6 +196,7 @@
     overflow: hidden;
     background: white !important;
   }
+
   .media-library-item__attributes {
     position: absolute;
     bottom: 0;
@@ -161,8 +206,10 @@
     overflow: hidden;
     background: white !important;
   }
+
   .media-library-selection {
     margin: 0;
+
     .media-library-item--grid {
       width: 100%;
     }

@@ -41,7 +41,8 @@ class SettingsForm extends ConfigFormBase {
 
     $form['hide_section_settings'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Hide section settings'),
+      '#title' => $this->t('Hide "Advanced Settings" Tab'),
+      '#description' => $this->t('<img src="/' . drupal_get_path('module', 'bootstrap_layout_builder') . '/images/drupal-ui/toggle-advanced-settings.png" alt="Toggle Advanced Settings Tab Visibility" title="Toggle Advanced Settings Tab Visibility">'),
       '#default_value' => $config->get('hide_section_settings'),
     ];
 
