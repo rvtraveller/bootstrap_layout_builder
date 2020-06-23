@@ -339,7 +339,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#options' => $container_types,
       '#default_value' => !empty($this->configuration['container']) ? $this->configuration['container'] : 'container',
       '#attributes' => [
-        'class' => ['lbl_container_type'],
+        'class' => ['blb_container_type'],
       ],
       '#states' => [
         'visible' => [
@@ -355,10 +355,13 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $breakpoint = $this->entityTypeManager->getStorage('blb_breakpoint')->load($breakpoint_id);
       $layout_options = $breakpoint->getLayoutOptions($layout_id);
       $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id] = [
-        '#type' => 'select',
+        '#type' => 'radios',
         '#title' => $breakpoint->label(),
         '#options' => $layout_options,
         '#default_value' => $this->configuration['breakpoints'][$breakpoint_id] ?: '',
+        '#attributes' => [
+          'class' => ['blb_breakpoint_cols'],
+        ],
       ];
     }
 

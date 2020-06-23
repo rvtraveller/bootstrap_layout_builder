@@ -19,6 +19,12 @@
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
   border-radius: 2px;
   white-space: normal;
+  z-index: 1;
+
+  &.blb_tooltip-lg {
+    width: 150px;
+    margin-left: -75px;
+  }
 
   &:before {
     top: -20px;

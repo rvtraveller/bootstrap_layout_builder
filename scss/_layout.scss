@@ -1,5 +1,5 @@
 // Container Type
-.lbl_container_type .form-radios {
+.blb_container_type .form-radios {
   display: flex;
 }
 
@@ -37,4 +37,47 @@
   &:last-child input + label {
     border-radius: 0 8px 8px 0;
   }
+}
+
+// Graphical Layout Columns
+.blb_breakpoint_cols {
+  label {
+    position: relative;
+    display: flex;
+    margin: 0 -5px;
+    cursor: pointer;
+
+    &:hover {
+      .blb_tooltip {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0px);
+      }
+
+      .blb_breakpoint_col {
+        background-color: $white;
+      }
+    }
+  }
+
+  input {
+    opacity: 0;
+    height: 0;
+    display: block;
+
+    &:checked + label .blb_breakpoint_col {
+      color: $white;
+      background-color: #277abd;
+    }
+  }
+}
+
+.blb_breakpoint_col {
+  padding: 6px 10px;
+  margin: 0 5px;
+  text-align: center;
+  color: $gray-444;
+  background-color: rgba($white, .7);
+  transition: all .25s ease-out;
+  border-radius: 3px;
 }
