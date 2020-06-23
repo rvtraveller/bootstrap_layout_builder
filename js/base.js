@@ -31,19 +31,18 @@
           var colsConfig = cols.split('_');
           var colsLabel = $(this).find('label');
 
+          // Wrap our radio labels and display as a tooltip.
           colsLabel.wrapInner('<div class="blb_tooltip blb_tooltip-lg"></div>');
 
+          // Provide a graphical representation of the columns via some nifty divs styling.
           $.each(colsConfig, function(index, value) {
             var width = ((value / numOfCols) * 100);
-
             $('<div />', {
               'text': width.toFixed(0) + '%',
               'style': 'width:' + width + '%;',
               'class': 'blb_breakpoint_col'
             }).appendTo(colsLabel);
           });
-
-          console.log(colsConfig);
         });
 
       });
