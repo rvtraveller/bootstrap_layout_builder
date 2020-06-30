@@ -1,7 +1,5 @@
 hide_section_settings: 0
-background_colors: "bg-success|Green\r\nbg-warning|Yellow"
-default_breakpoint: mobile
-default_breakpoint_label: 'Layout'
+background_colors: ""
 background_image:
   bundle: 'image'
   field: 'field_media_image'

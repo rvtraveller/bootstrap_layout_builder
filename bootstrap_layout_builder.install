@@ -24,6 +24,8 @@ function bootstrap_layout_builder_update_8001() {
  * Import new configs for breakpoints, layouts and its options.
  */
 function bootstrap_layout_builder_update_8002() {
+  // Enable the new dependency modules.
+  \Drupal::service('module_installer')->install(['media_library_form_element', 'media_library_theme_reset']);
   // Re-import the default configs.
   \Drupal::service('config.installer')->installDefaultConfig('module', 'bootstrap_layout_builder');
 }
