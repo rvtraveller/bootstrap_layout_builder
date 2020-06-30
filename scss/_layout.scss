@@ -3,9 +3,15 @@
   display: flex;
 }
 
+.form-radios > div {
+  padding: 0;
+}
+
 .form-item-layout-settings-ui-tab-content-layout-container-type {
   position: relative;
   flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
 
   input {
     opacity: 0;
