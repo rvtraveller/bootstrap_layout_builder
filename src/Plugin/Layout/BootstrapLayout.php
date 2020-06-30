@@ -73,6 +73,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    */
   public function build(array $regions) {
     $build = parent::build($regions);
+    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
 
     // Flag for local video.
     $has_background_local_video = FALSE;
@@ -83,14 +84,19 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
       if ($media_id = $this->configuration['container_wrapper_bg_media']) {
         $media_entity = Media::load($media_id);
-        $bundle = $media_entity->bundle();
-        if ($bundle == 'image') {
-          $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity);
-        }
-        elseif ($bundle == 'video_file') {
-          $has_background_local_video = TRUE;
-          $build['container_wrapper']['#video_wrapper_classes'] = $this->configuration['container_wrapper_bg_color_class'];
-          $build['container_wrapper']['#video_background_url'] = $this->buildBackgroundMediaLocalVideo($media_entity);
+        if ($media_entity) {
+          $bundle = $media_entity->bundle();
+        
+          if ($config->get('background_image.bundle') && $bundle == $config->get('background_image.bundle')) {
+            $media_field_name = $config->get('background_image.field');
+            $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity, $media_field_name);
+          }
+          elseif ($config->get('background_local_video.bundle') && $bundle == $config->get('background_local_video.bundle')) {
+            $media_field_name = $config->get('background_local_video.field');
+            $has_background_local_video = TRUE;
+            $build['container_wrapper']['#video_wrapper_classes'] = $this->configuration['container_wrapper_bg_color_class'];
+            $build['container_wrapper']['#video_background_url'] = $this->buildBackgroundMediaLocalVideo($media_entity, $media_field_name);
+          }
         }
       }
 
@@ -167,12 +173,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   /**
    * Helper function to the background media image style.
    *
+   * @param object $media_entity
+   *   A media entity object.
+   * @param object $field_name
+   *   The Media entity local video field name.
+   * 
    * @return string
    *   Background media image style.
    */
-  public function buildBackgroundMediaImage($media_entity) {
-    // @TODO make this dynamic by configuration
-    $fid = $media_entity->get('image')->target_id;
+  public function buildBackgroundMediaImage($media_entity, $field_name) {
+    $fid = $media_entity->get($field_name)->target_id;
     $file = File::load($fid);
     $background_url = $file->url();
 
@@ -183,12 +193,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   /**
    * Helper function to the background media local video style.
    *
+   * @param object $media_entity
+   *   A media entity object.
+   * @param object $field_name
+   *   The Media entity local video field name.
+   * 
    * @return string
    *   Background media local video style.
    */
-  public function buildBackgroundMediaLocalVideo($media_entity) {
-    // @TODO make this dynamic by configuration
-    $fid = $media_entity->get('field_media_video_file')->target_id;
+  public function buildBackgroundMediaLocalVideo($media_entity, $field_name) {
+    $fid = $media_entity->get($field_name)->target_id;
     $file = File::load($fid);
     return $file->url();
   }
@@ -381,19 +395,33 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ],
     ];
 
-    $form['ui']['tab_content']['appearance']['container_wrapper_bg_media'] = [
-      '#type' => 'media_library',
-      '#title' => $this->t('Background media'),
-      '#description' => $this->t('Background media'),
-      '#allowed_bundles' => ['image', 'video_file'],
-      '#default_value' => $this->configuration['container_wrapper_bg_media'],
-      '#prefix' => '<hr />',
-      '#states' => [
-        'visible' => [
-          ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
+    // Background media.
+    $allowed_bundles = [];
+    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
+    // Check if the bundle exist.
+    if ($config->get('background_image.bundle') && $this->entityTypeManager->getStorage('media_type')->load($config->get('background_image.bundle'))) {
+      $allowed_bundles[] = $config->get('background_image.bundle');
+    }
+    // Check if the bundle exist.
+    if ($config->get('background_local_video.bundle') && $this->entityTypeManager->getStorage('media_type')->load($config->get('background_local_video.bundle'))) {
+      $allowed_bundles[] = $config->get('background_local_video.bundle');
+    }
+
+    if ($allowed_bundles) {
+      $form['ui']['tab_content']['appearance']['container_wrapper_bg_media'] = [
+        '#type' => 'media_library',
+        '#title' => $this->t('Background media'),
+        '#description' => $this->t('Background media'),
+        '#allowed_bundles' => $allowed_bundles,
+        '#default_value' => $this->configuration['container_wrapper_bg_media'],
+        '#prefix' => '<hr />',
+        '#states' => [
+          'visible' => [
+            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
+          ],
         ],
-      ],
-    ];
+      ];
+    }
 
     // Move default admin label input to setting tab.
     $form['ui']['tab_content']['settings']['label'] = $form['label'];
