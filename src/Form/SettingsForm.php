@@ -91,8 +91,8 @@ class SettingsForm extends ConfigFormBase {
     // Background image media bundle.
     $media_bundles = [];
     $media_bundles_info = $this->entityTypeBundleInfo->getBundleInfo('media');
-    // ignore if match any of the following names.
-    $disabled_bundles = ['audio', 'document', 'remote_video'];
+    // Ignore if match any of the following names.
+    $disabled_bundles = ['audio', 'audio_file', 'instagram', 'tweet', 'document', 'remote_video'];
     foreach ($media_bundles_info as $key => $bundle) {
       if (!in_array($key, $disabled_bundles)) {
         $media_bundles[$key] = $bundle['label'] . ' (' . $key . ')';
@@ -101,9 +101,9 @@ class SettingsForm extends ConfigFormBase {
 
     $form['background_image_bundle'] = [
       '#type' => 'select',
-      '#title' => $this->t('Background image media bundle'),
+      '#title' => $this->t('Image background media bundle'),
       '#options' => $media_bundles,
-      '#description' => $this->t('Background image media entity bundle.'),
+      '#description' => $this->t('Image background media entity bundle.'),
       '#default_value' => $config->get('background_image.bundle'),
       '#ajax' => [
         'callback' => [$this, 'getFields'],
@@ -119,18 +119,18 @@ class SettingsForm extends ConfigFormBase {
 
     $form['background_image_field'] = [
       '#type' => 'select',
-      '#title' => $this->t('Background image media field'),
+      '#title' => $this->t('Image background media field'),
       '#options' => $this->getFieldsByBundle($config->get('background_image.bundle')),
-      '#description' => $this->t('Background image media entity field.'),
+      '#description' => $this->t('Image background media entity field.'),
       '#default_value' => $config->get('background_image.field'),
       '#attributes' => ['id' => 'media_image_bundle_fields'],
     ];
 
     $form['background_local_video_bundle'] = [
       '#type' => 'select',
-      '#title' => $this->t('Background video media bundle'),
+      '#title' => $this->t('Local video background media bundle'),
       '#options' => $media_bundles,
-      '#description' => $this->t('Background local video media entity bundle.'),
+      '#description' => $this->t('Background for local video media entity bundle.'),
       '#default_value' => $config->get('background_local_video.bundle'),
       '#ajax' => [
         'callback' => [$this, 'getFields'],
@@ -146,10 +146,10 @@ class SettingsForm extends ConfigFormBase {
 
     $form['background_local_video_field'] = [
       '#type' => 'select',
-      '#title' => $this->t('Background image media field'),
+      '#title' => $this->t('Local video background media field'),
       '#options' => $this->getFieldsByBundle($config->get('background_local_video.bundle')),
-      '#description' => $this->t('Background local video media entity field.'),
-      '#default_value' => $config->get('background_image.field'),
+      '#description' => $this->t('Local video background media entity field.'),
+      '#default_value' => $config->get('background_local_video.field'),
       '#attributes' => ['id' => 'media_local_video_bundle_fields'],
     ];
 
