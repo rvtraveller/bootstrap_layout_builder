@@ -124,6 +124,7 @@ class SettingsForm extends ConfigFormBase {
       '#description' => $this->t('Image background media entity field.'),
       '#default_value' => $config->get('background_image.field'),
       '#attributes' => ['id' => 'media_image_bundle_fields'],
+      '#validated' => TRUE,
     ];
 
     $form['background_local_video_bundle'] = [
@@ -151,6 +152,7 @@ class SettingsForm extends ConfigFormBase {
       '#description' => $this->t('Local video background media entity field.'),
       '#default_value' => $config->get('background_local_video.field'),
       '#attributes' => ['id' => 'media_local_video_bundle_fields'],
+      '#validated' => TRUE,
     ];
 
     $form['style'] = [
