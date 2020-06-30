@@ -1,4 +1,6 @@
-#drupal-off-canvas .form-composite > legend, #drupal-off-canvas .form-composite .label {
+#drupal-off-canvas w
+.form-composite > legend, #drupal-off-canvas w
+.form-composite .label {
   font-weight: normal;
 }
 
@@ -62,20 +64,20 @@
 
 #drupal-off-canvas .blb_ui .blb_tooltip {
   background: #f8f9fa;
-  top: 100%;
+  bottom: 100%;
   color: #333333;
   font-weight: bold;
   display: block;
   left: 50%;
   margin-left: -37.5px;
-  margin-top: 15px;
+  margin-bottom: 15px;
   opacity: 0;
   padding: 5px 10px;
   pointer-events: none;
   position: absolute;
   text-align: center;
   width: 75px;
-  transform: translateY(10px);
+  transform: translateY(-10px);
   transition: all .25s ease-out;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
   border-radius: 2px;
@@ -88,21 +90,11 @@
   margin-left: -75px;
 }
 
-#drupal-off-canvas .blb_ui .blb_tooltip:before {
-  top: -20px;
-  content: " ";
-  display: block;
-  height: 20px;
-  left: 0;
-  position: absolute;
-  width: 100%;
-}
-
 #drupal-off-canvas .blb_ui .blb_tooltip:after {
   border-left: solid transparent 10px;
   border-right: solid transparent 10px;
-  border-bottom: solid #f8f9fa 10px;
-  top: -10px;
+  border-top: solid #f8f9fa 10px;
+  bottom: -10px;
   content: " ";
   height: 0;
   left: 50%;
@@ -111,13 +103,33 @@
   width: 0;
 }
 
+#drupal-off-canvas .blb_ui .blb_tooltip[data-placement="bottom"] {
+  bottom: auto;
+  top: 100%;
+  margin-top: 15px;
+  transform: translateY(10px);
+}
+
+#drupal-off-canvas .blb_ui .blb_tooltip[data-placement="bottom"]:after {
+  border-top: 0;
+  border-bottom: solid #f8f9fa 10px;
+  top: -10px;
+  bottom: auto;
+}
+
 #drupal-off-canvas .blb_ui .blb_container_type .form-radios {
   display: flex;
+}
+
+#drupal-off-canvas .blb_ui .form-radios > div {
+  padding: 0;
 }
 
 #drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type {
   position: relative;
   flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
 }
 
 #drupal-off-canvas .blb_ui .form-item-layout-settings-ui-tab-content-layout-container-type input {
