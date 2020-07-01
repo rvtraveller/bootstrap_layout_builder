@@ -313,7 +313,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     foreach ($tabs as $tab) {
       $form['ui']['nav_tabs'][$tab['machine_name']] = [
         '#type' => 'inline_template',
-        '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}">{{ icon }}<div class="blb_tooltip" data-placement="bottom" role="tooltip">{{ title }}</div></a></li>',
+        '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}">{{ icon }}<div class="blb_tooltip" role="tooltip">{{ title }}</div></a></li>',
         '#context' => [
           'title' => $tab['title'],
           'target' => $tab['machine_name'],
@@ -373,6 +373,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#title' => $breakpoint->label(),
         '#options' => $layout_options,
         '#default_value' => $this->configuration['breakpoints'][$breakpoint_id] ?: '',
+        '#validated' => TRUE,
         '#attributes' => [
           'class' => ['blb_breakpoint_cols'],
         ],
@@ -385,6 +386,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#options' => $this->getStyleOptions('background_colors'),
       '#title' => $this->t('Background color'),
       '#default_value' => $this->configuration['container_wrapper_bg_color_class'],
+      '#validated' => TRUE,
       '#attributes' => [
         'class' => ['bootstrap_layout_builder_bg_color'],
       ],

@@ -3,11 +3,6 @@ entity.blb_breakpoint.add_form:
   title: 'Add breakpoint'
   appears_on:
   - entity.blb_breakpoint.collection
-entity.blb_layout.add_form:
-  route_name: 'entity.blb_layout.add_form'
-  title: 'Add layout'
-  appears_on:
-  - entity.blb_layout.collection
 entity.blb_layout_option.add_form:
   route_name: 'entity.blb_layout_option.add_form'
   title: 'Add option'

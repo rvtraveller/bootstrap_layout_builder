@@ -20,9 +20,7 @@ use Drupal\bootstrap_layout_builder\LayoutInterface;
  *     "list_builder" = "Drupal\bootstrap_layout_builder\LayoutListBuilder",
  *     "form" = {
  *       "options" = "Drupal\bootstrap_layout_builder\Form\LayoutOptionsForm",
- *       "add" = "Drupal\bootstrap_layout_builder\Form\LayoutForm",
- *       "edit" = "Drupal\bootstrap_layout_builder\Form\LayoutForm",
- *       "delete" = "Drupal\bootstrap_layout_builder\Form\LayoutDeleteForm"
+ *       "edit" = "Drupal\bootstrap_layout_builder\Form\LayoutForm"
  *     }
  *   },
  *   config_prefix = "layout",
@@ -30,19 +28,19 @@ use Drupal\bootstrap_layout_builder\LayoutInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
+ *     "number_of_columns" = "number_of_columns",
  *     "uuid" = "uuid"
  *   },
  *   config_export = {
  *     "id" = "id",
  *     "label" = "label",
+ *     "number_of_columns" = "number_of_columns",
  *     "uuid" = "uuid"
  *   },
  *   links = {
  *     "options-form" = "/admin/config/bootstrap-layout-builder/layouts/{blb_layout}/options",
  *     "edit-form" = "/admin/config/bootstrap-layout-builder/layouts/{blb_layout}",
- *     "delete-form" = "/admin/config/bootstrap-layout-builder/layouts/{blb_layout}/delete",
  *     "collection" = "/admin/config/bootstrap-layout-builder/layouts",
- *     "add-form" = "/admin/config/bootstrap-layout-builder/layouts/add"
  *   }
  * )
  */
@@ -61,6 +59,28 @@ class Layout extends ConfigEntityBase implements LayoutInterface {
    * @var string
    */
   protected $label;
+
+  /**
+   * The number of layout columns.
+   *
+   * @var string
+   */
+  protected $number_of_columns;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getNumberOfColumns() {
+    return $this->number_of_columns;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setNumberOfColumns($number_of_columns) {
+    $this->number_of_columns = $number_of_columns;
+    return $this;
+  }
 
   /**
    * {@inheritdoc}

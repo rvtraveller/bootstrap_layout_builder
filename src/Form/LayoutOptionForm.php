@@ -103,6 +103,7 @@ class LayoutOptionForm extends EntityForm implements ContainerInjectionInterface
       '#title' => $this->t('Structure'),
       '#maxlength' => 255,
       '#default_value' => $option->getStructure() ?: '',
+      '#description' => $this->t('Add numbers seperated by space; if the number of columns at this layout is two and you are using bootstrap 12 Grid system<br/> this field must be two numbers at the sum of them sould equal 12. eg: <b>6 6</b> or <b>8 4</b> ...etc.'),
       '#required' => TRUE,
     ];
 
@@ -122,6 +123,38 @@ class LayoutOptionForm extends EntityForm implements ContainerInjectionInterface
     ];
 
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $layout = $this->entity->getLayout();
+    $structure = $form_state->getValue('structure');
+    $structure = explode(' ', $structure);
+    $invalid_structure = FALSE;
+    // Make sure that all items are numbers.
+    foreach ($structure as $col) {
+      if (!is_numeric($col)) {
+        $invalid_structure = TRUE;
+        break;
+      }
+    }
+
+    // Check the number of colmuns and the sum of the structure.
+    if (
+      count($structure) != $layout->getNumberOfColumns() ||
+      array_sum($structure) != 12
+    ) {
+      $invalid_structure = TRUE;
+    }
+
+    if ($invalid_structure) {
+      $form_state->setErrorByName(
+        'structure',
+        $this->t('Structure must be @cols numbers seperated by space and the sum of these numbers must equal 12!', ['@cols' => $layout->getNumberOfColumns()])
+      );
+    }
   }
 
   /**

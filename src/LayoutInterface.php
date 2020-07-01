@@ -17,4 +17,9 @@ interface LayoutInterface extends ConfigEntityInterface {
    */
   public function getLayoutOptions();
 
+  /**
+   * Returns the number of columns at the layout.
+   */
+  public function getNumberOfColumns();
+
 }

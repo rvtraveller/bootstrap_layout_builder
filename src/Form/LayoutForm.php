@@ -65,7 +65,29 @@ class LayoutForm extends EntityForm implements ContainerInjectionInterface {
       '#disabled' => !$layout->isNew(),
     ];
 
+    $form['number_of_columns'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Number of columns'),
+      '#description' => $this->t('The number of columns (Regions) at this layout.'),
+      '#default_value' => $layout->getNumberOfColumns(),
+      '#maxlength' => 3,
+      '#required' => TRUE,
+      '#disabled' => TRUE,
+    ];
+
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if (!is_numeric($form_state->getValue('number_of_columns'))) {
+      $form_state->setErrorByName(
+        'number_of_columns',
+        $this->t('Number of columns must be a number!')
+      );
+    }
   }
 
   /**
@@ -73,6 +95,7 @@ class LayoutForm extends EntityForm implements ContainerInjectionInterface {
    */
   public function save(array $form, FormStateInterface $form_state) {
     $layout = $this->entity;
+    // $layout->setNumberOfColumns($form->getValue('number_of_columns'));
     $save_operation = $layout->save();
 
     switch ($save_operation) {
