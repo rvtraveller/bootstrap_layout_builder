@@ -313,7 +313,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     foreach ($tabs as $tab) {
       $form['ui']['nav_tabs'][$tab['machine_name']] = [
         '#type' => 'inline_template',
-        '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}">{{ icon }}<div class="blb_tooltip" role="tooltip">{{ title }}</div></a></li>',
+        '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}">{{ icon }}<div class="blb_tooltip" data-placement="bottom" role="tooltip">{{ title }}</div></a></li>',
         '#context' => [
           'title' => $tab['title'],
           'target' => $tab['machine_name'],
