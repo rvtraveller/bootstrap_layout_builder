@@ -240,7 +240,9 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $lines = explode(PHP_EOL, $config_options);
     foreach ($lines as $line) {
       $line = explode('|', $line);
-      $options[$line[0]] = $line[1];
+      if ($line && isset($line[0]) && isset($line[1])) {
+        $options[$line[0]] = $line[1];
+      }
     }
 
     return $options;
@@ -317,7 +319,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#context' => [
           'title' => $tab['title'],
           'target' => $tab['machine_name'],
-          'active' => $tab['active'] == TRUE ? 'active' : '',
+          'active' => isset($tab['active']) && $tab['active'] == TRUE ? 'active' : '',
           'icon' => t('<img class="blb_icon" src="/' . drupal_get_path('module', 'bootstrap_layout_builder') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg') . '" />'),
         ],
       ];
@@ -328,7 +330,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           'class' => [
             'blb_tab-pane',
             'blb_tab-pane--' . $tab['machine_name'],
-            $tab['active'] == TRUE ? 'active' : '',
+            isset($tab['active']) && $tab['active'] == TRUE ? 'active' : '',
           ],
         ],
       ];
