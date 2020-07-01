@@ -86,7 +86,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         $media_entity = Media::load($media_id);
         if ($media_entity) {
           $bundle = $media_entity->bundle();
-        
+
           if ($config->get('background_image.bundle') && $bundle == $config->get('background_image.bundle')) {
             $media_field_name = $config->get('background_image.field');
             $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity, $media_field_name);
@@ -129,7 +129,9 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     if ($this->configuration['regions_classes']) {
       foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
         $region_classes = $this->configuration['regions_classes'][$region_name];
-        $build[$region_name]['#attributes']['class'] = $this->configuration['layout_regions_classes'][$region_name];
+        if ($this->configuration['layout_regions_classes'] && isset($this->configuration['layout_regions_classes'][$region_name])) {
+          $build[$region_name]['#attributes']['class'] = $this->configuration['layout_regions_classes'][$region_name];
+        }
         $build[$region_name]['#attributes']['class'][] = $region_classes;
       }
     }
@@ -177,7 +179,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    *   A media entity object.
    * @param object $field_name
    *   The Media entity local video field name.
-   * 
+   *
    * @return string
    *   Background media image style.
    */
@@ -197,7 +199,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    *   A media entity object.
    * @param object $field_name
    *   The Media entity local video field name.
-   * 
+   *
    * @return string
    *   Background media local video style.
    */
@@ -364,17 +366,20 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ],
     ];
 
-    // @TODO Style the select list.
     $layout_id = $this->getPluginDefinition()->id();
     $breakpoints = $this->entityTypeManager->getStorage('blb_breakpoint')->getQuery()->sort('weight', 'ASC')->execute();
     foreach ($breakpoints as $breakpoint_id) {
       $breakpoint = $this->entityTypeManager->getStorage('blb_breakpoint')->load($breakpoint_id);
       $layout_options = $breakpoint->getLayoutOptions($layout_id);
+      $default_value = '';
+      if ($this->configuration['breakpoints'] && isset($this->configuration['breakpoints'][$breakpoint_id])) {
+        $default_value = $this->configuration['breakpoints'][$breakpoint_id];
+      }
       $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id] = [
         '#type' => 'radios',
         '#title' => $breakpoint->label(),
         '#options' => $layout_options,
-        '#default_value' => $this->configuration['breakpoints'][$breakpoint_id] ?: '',
+        '#default_value' => $default_value,
         '#validated' => TRUE,
         '#attributes' => [
           'class' => ['blb_breakpoint_cols'],

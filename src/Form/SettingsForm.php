@@ -201,7 +201,7 @@ class SettingsForm extends ConfigFormBase {
     $wrapper_id = $triggering_element["#ajax"]["wrapper"];
     $rendered_field = '';
     foreach ($this->getFieldsByBundle($value) as $field_name => $field_value) {
-        $rendered_field .= '<option value="' . $field_name . '">' . $field_value . '</option>';
+      $rendered_field .= '<option value="' . $field_name . '">' . $field_value . '</option>';
     }
     $response = new AjaxResponse();
     $response->addCommand(new HtmlCommand('#' . $wrapper_id, $rendered_field));
