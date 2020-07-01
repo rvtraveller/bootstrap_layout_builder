@@ -296,10 +296,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ],
     ];
 
-    if ($this->sectionSettingsIsHidden()) {
-      array_pop($tabs);
-    }
-
     // Create our tabs from above.
     $form['ui']['nav_tabs'] = [
       '#type' => 'html_tag',
