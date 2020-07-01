@@ -89,13 +89,19 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
           if ($config->get('background_image.bundle') && $bundle == $config->get('background_image.bundle')) {
             $media_field_name = $config->get('background_image.field');
-            $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity, $media_field_name);
+            // Check if the field exist.
+            if ($media_entity->hasField($media_field_name)) {
+              $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity, $media_field_name);
+            }
           }
           elseif ($config->get('background_local_video.bundle') && $bundle == $config->get('background_local_video.bundle')) {
             $media_field_name = $config->get('background_local_video.field');
             $has_background_local_video = TRUE;
             $build['container_wrapper']['#video_wrapper_classes'] = $this->configuration['container_wrapper_bg_color_class'];
-            $build['container_wrapper']['#video_background_url'] = $this->buildBackgroundMediaLocalVideo($media_entity, $media_field_name);
+            // Check if the field exist.
+            if ($media_entity->hasField($media_field_name)) {
+              $build['container_wrapper']['#video_background_url'] = $this->buildBackgroundMediaLocalVideo($media_entity, $media_field_name);
+            }
           }
         }
       }
@@ -535,31 +541,37 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     // Save sction label.
     $this->configuration['label'] = $form_state->getValue(array_merge($settings_tab, ['label']));
 
-    // Check if section settings visible.
-    if (!$this->sectionSettingsIsHidden()) {
-      // Container type.
-      $this->configuration['container'] = '';
-      if ($form_state->getValue(array_merge($layout_tab, ['has_container']))) {
-        $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
-        // Container wrapper.
-        $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_color_class']));
-        $this->configuration['container_wrapper_bg_media'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_media']));
+    // Container type.
+    $this->configuration['container'] = '';
+    if ($form_state->getValue(array_merge($layout_tab, ['has_container']))) {
+      $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
+      // Container wrapper.
+      $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_color_class']));
+      $this->configuration['container_wrapper_bg_media'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_media']));
+      // Container classes from advanced mode.
+      if (!$this->sectionSettingsIsHidden()) {
         $this->configuration['container_wrapper_classes'] = $form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_classes']));
       }
+    }
 
+    // Row classes from advanced mode.
+    if (!$this->sectionSettingsIsHidden()) {
       $this->configuration['section_classes'] = $form_state->getValue(array_merge($settings_tab, ['row', 'section_classes']));
+    }
 
-      $breakpoints = $form_state->getValue(array_merge($layout_tab, ['breakpoints']));
-      // Save breakpoints configuration.
-      $this->saveBreakpoints($breakpoints);
+    $breakpoints = $form_state->getValue(array_merge($layout_tab, ['breakpoints']));
+    // Save breakpoints configuration.
+    $this->saveBreakpoints($breakpoints);
 
-      foreach ($this->getPluginDefinition()->getRegionNames() as $key => $region_name) {
-        // Save layout region classes.
-        $this->configuration['layout_regions_classes'][$region_name] = $this->getRegionClasses($key, $breakpoints);
-        // Get the additonal classes from advanced mode.
+    foreach ($this->getPluginDefinition()->getRegionNames() as $key => $region_name) {
+      // Save layout region classes.
+      $this->configuration['layout_regions_classes'][$region_name] = $this->getRegionClasses($key, $breakpoints);
+      // Cols classes from advanced mode.
+      if (!$this->sectionSettingsIsHidden()) {
         $this->configuration['regions_classes'][$region_name] = $form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_classes']));
       }
     }
+
   }
 
 }
