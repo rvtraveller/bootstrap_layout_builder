@@ -371,7 +371,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
     $form['ui']['tab_content']['layout']['remove_gutters'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Remove Column Gutters'),
+      '#title' => $this->t('No Gutters'),
       '#default_value' => (int) !empty($this->configuration['remove_gutters']) ? TRUE : FALSE,
     ];
 
