@@ -350,7 +350,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $container_types = [
       'container' => $this->t('Boxed'),
       'container-fluid' => $this->t('Full'),
-      'w-100' => $this->t('Edge to Edge'),
+      'w-100' => $this->t('Flush'),
     ];
 
     $form['ui']['tab_content']['layout']['container_type'] = [
