@@ -267,7 +267,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#type' => 'container',
       '#weight' => -100,
       '#attributes' => [
-        'class' => 'blb_ui',
+        'id' => 'blb_ui',
       ],
     ];
 
