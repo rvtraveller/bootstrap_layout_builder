@@ -8,6 +8,7 @@
     @import "ui/tooltips";
     @import "ui/tabs";
   }
+
   // Add default style for btn to solve Bootstrap 3 drupal theme issue.
   button {
     &.button {
@@ -25,6 +26,7 @@
       background: #777;
       font-size: 14px;
       font-weight: 600;
+
       &.button--primary {
         margin-top: 15px;
         color: $white;
