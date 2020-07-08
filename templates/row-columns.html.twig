@@ -20,8 +20,6 @@
 {% if content %}
   {% if content['container'] %}
 
-    {{ dump(content['container']) }}
-
     {% if video_background_url %}
       {{ attach_library('bootstrap_layout_builder/background-media-local-video') }}
       <div class="background-local-video {{ video_wrapper_classes }}">
