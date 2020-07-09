@@ -192,7 +192,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   public function buildBackgroundMediaImage($media_entity, $field_name) {
     $fid = $media_entity->get($field_name)->target_id;
     $file = File::load($fid);
-    $background_url = $file->url();
+    $background_url = $file->createFileUrl();
 
     $style = 'background-image: url(' . $background_url . '); background-repeat: no-repeat; background-size: cover;';
     return $style;
@@ -212,7 +212,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   public function buildBackgroundMediaLocalVideo($media_entity, $field_name) {
     $fid = $media_entity->get($field_name)->target_id;
     $file = File::load($fid);
-    return $file->url();
+    return $file->createFileUrl();
   }
 
   /**
