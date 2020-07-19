@@ -8,8 +8,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\media\Entity\Media;
-use Drupal\file\Entity\File;
 use Drupal\bootstrap_styles\StylesGroup\StylesGroupManager;
 
 /**
@@ -85,55 +83,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    */
   public function build(array $regions) {
     $build = parent::build($regions);
-    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
-
-    // Flag for local video.
-    $has_background_local_video = FALSE;
 
     // Container.
     if ($this->configuration['container']) {
       $build['container']['#attributes']['class'] = $this->configuration['container'];
 
-      if ($media_id = $this->configuration['container_wrapper_bg_media']) {
-        $media_entity = Media::load($media_id);
-        if ($media_entity) {
-          $bundle = $media_entity->bundle();
+      $build['container_wrapper'] = $this->stylesGroupManager->buildStyles([], $this->configuration['container_wrapper']['bootstrap_styles']);
 
-          if ($config->get('background_image.bundle') && $bundle == $config->get('background_image.bundle')) {
-            $media_field_name = $config->get('background_image.field');
-            // Check if the field exist.
-            if ($media_entity->hasField($media_field_name)) {
-              $build['container_wrapper']['#attributes']['style'] = $this->buildBackgroundMediaImage($media_entity, $media_field_name);
-            }
-          }
-          elseif ($config->get('background_local_video.bundle') && $bundle == $config->get('background_local_video.bundle')) {
-            $media_field_name = $config->get('background_local_video.field');
-            $has_background_local_video = TRUE;
-            $build['container_wrapper']['#video_wrapper_classes'] = $this->configuration['container_wrapper_bg_color_class'];
-            // Check if the field exist.
-            if ($media_entity->hasField($media_field_name)) {
-              $build['container_wrapper']['#video_background_url'] = $this->buildBackgroundMediaLocalVideo($media_entity, $media_field_name);
-            }
-          }
-        }
+      if ($this->configuration['container_wrapper_classes']) {
+        $build['container_wrapper']['#attributes']['class'][] = $this->configuration['container_wrapper_classes'];
       }
-
-      if ($this->configuration['container_wrapper_bg_color_class'] || $this->configuration['container_wrapper_classes']) {
-        $container_wrapper_classes = '';
-        if ($this->configuration['container_wrapper_bg_color_class'] && !$has_background_local_video) {
-          $container_wrapper_classes .= $this->configuration['container_wrapper_bg_color_class'];
-        }
-
-        if ($this->configuration['container_wrapper_classes']) {
-          // Add space after the last class.
-          if ($container_wrapper_classes) {
-            $container_wrapper_classes = $container_wrapper_classes . ' ';
-          }
-          $container_wrapper_classes .= $this->configuration['container_wrapper_classes'];
-        }
-        $build['container_wrapper']['#attributes']['class'] = $container_wrapper_classes;
-      }
-
     }
 
     // Section Classes.
@@ -171,6 +130,11 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     return $default_configuration + [
       // Container wrapper commonly used on container background and minor styling.
       'container_wrapper_classes' => '',
+      // Container wrapper.
+      'container_wrapper' => [
+        // The dynamic bootstrap styles storage.
+        'bootstrap_styles' => [],
+      ],
       // Add background color to container wrapper.
       'container_wrapper_bg_color_class' => '',
       // Add background media to container wrapper.
@@ -188,43 +152,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // The region refer to the div that contains Col in bootstrap.
       'layout_regions_classes' => [],
     ];
-  }
-
-  /**
-   * Helper function to the background media image style.
-   *
-   * @param object $media_entity
-   *   A media entity object.
-   * @param object $field_name
-   *   The Media entity local video field name.
-   *
-   * @return string
-   *   Background media image style.
-   */
-  public function buildBackgroundMediaImage($media_entity, $field_name) {
-    $fid = $media_entity->get($field_name)->target_id;
-    $file = File::load($fid);
-    $background_url = $file->createFileUrl();
-
-    $style = 'background-image: url(' . $background_url . '); background-repeat: no-repeat; background-size: cover;';
-    return $style;
-  }
-
-  /**
-   * Helper function to the background media local video style.
-   *
-   * @param object $media_entity
-   *   A media entity object.
-   * @param object $field_name
-   *   The Media entity local video field name.
-   *
-   * @return string
-   *   Background media local video style.
-   */
-  public function buildBackgroundMediaLocalVideo($media_entity, $field_name) {
-    $fid = $media_entity->get($field_name)->target_id;
-    $file = File::load($fid);
-    return $file->createFileUrl();
   }
 
   /**
@@ -402,8 +329,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ];
     }
 
-    // Get styling options.
-    $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration);
+    // Container wrapper styling.
+    $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration['container_wrapper']['bootstrap_styles']);
     // Alter styling elements.
     $form['ui']['tab_content']['appearance']['background']['#states'] = [
       'visible' => [
@@ -412,34 +339,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     ];
     $form['ui']['tab_content']['appearance']['background']['background_color']['#attributes']['class'][] = 'bootstrap_layout_builder_bg_color';
     // @TODO Map old configs.
-
-    // Background media.
-    $allowed_bundles = [];
-    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
-    // Check if the bundle exist.
-    if ($config->get('background_image.bundle') && $this->entityTypeManager->getStorage('media_type')->load($config->get('background_image.bundle'))) {
-      $allowed_bundles[] = $config->get('background_image.bundle');
-    }
-    // Check if the bundle exist.
-    if ($config->get('background_local_video.bundle') && $this->entityTypeManager->getStorage('media_type')->load($config->get('background_local_video.bundle'))) {
-      $allowed_bundles[] = $config->get('background_local_video.bundle');
-    }
-
-    if ($allowed_bundles) {
-      $form['ui']['tab_content']['appearance']['container_wrapper_bg_media'] = [
-        '#type' => 'media_library',
-        '#title' => $this->t('Background media'),
-        '#description' => $this->t('Background media'),
-        '#allowed_bundles' => $allowed_bundles,
-        '#default_value' => $this->configuration['container_wrapper_bg_media'],
-        '#prefix' => '<hr />',
-        '#states' => [
-          'visible' => [
-            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
-          ],
-        ],
-      ];
-    }
 
     // Move default admin label input to setting tab.
     $form['ui']['tab_content']['settings']['label'] = $form['label'];
@@ -490,11 +389,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       }
     }
 
-    // @TODO Effects.
-    // $form['ui']['tab_content']['effects']['message'] = [
-    //   '#type' => 'inline_template',
-    //   '#template' => '<small>Transition Effects Coming Soon...</small>',
-    // ];
     // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/base';
 
@@ -550,10 +444,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
 
       // Styles tab.
-      $this->configuration = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration);
+      $this->configuration['container_wrapper']['bootstrap_styles'] = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration['container_wrapper']['bootstrap_styles']);
 
-      // $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_color_class']));
-      $this->configuration['container_wrapper_bg_media'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_media']));
       // Container classes from advanced mode.
       if (!$this->sectionSettingsIsHidden()) {
         $this->configuration['container_wrapper_classes'] = $form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_classes']));
