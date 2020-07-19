@@ -1,3 +1,10 @@
+bootstrap_layout_builder.styles:
+  path: '/admin/config/bootstrap-layout-builder/styles'
+  defaults:
+    _form: '\Drupal\bootstrap_layout_builder\Form\StylesForm'
+    _title: 'Bootstrap Layout Builder Styles'
+  requirements:
+    _permission: 'configure bootstrap layout builder'
 bootstrap_layout_builder.settings:
   path: '/admin/config/bootstrap-layout-builder/settings'
   defaults:

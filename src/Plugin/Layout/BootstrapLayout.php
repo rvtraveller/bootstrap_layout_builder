@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
+use Drupal\bootstrap_styles\StylesGroup\StylesGroupManager;
 
 /**
  * A layout from our bootstrap layout builder.
@@ -36,6 +37,13 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   protected $entityTypeManager;
 
   /**
+   * The styles group plugin manager.
+   *
+   * @var \Drupal\bootstrap_styles\StylesGroup\StylesGroupManager
+   */
+  protected $stylesGroupManager;
+
+  /**
    * Constructs a new class instance.
    *
    * @param array $configuration
@@ -48,11 +56,14 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    *   Config factory service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\bootstrap_styles\StylesGroup\StylesGroupManager $styles_group_manager
+   *   The styles group plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entity_type_manager, StylesGroupManager $styles_group_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $configFactory;
     $this->entityTypeManager = $entity_type_manager;
+    $this->stylesGroupManager = $styles_group_manager;
   }
 
   /**
@@ -64,7 +75,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $plugin_id,
       $plugin_definition,
       $container->get('config.factory'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('plugin.manager.bootstrap_styles_group')
     );
   }
 
@@ -283,12 +295,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         'icon' => 'appearance.svg',
         'title' => $this->t('Style'),
       ],
-      // @TODO enable effects.
-      // [
-      //   'machine_name' => 'effects',
-      //   'icon' => 'effects.svg',
-      //   'title' => $this->t('Effects'),
-      // ],
       [
         'machine_name' => 'settings',
         'icon' => 'settings.svg',
@@ -396,22 +402,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ];
     }
 
-    // Background Colors.
-    $form['ui']['tab_content']['appearance']['container_wrapper_bg_color_class'] = [
-      '#type' => 'radios',
-      '#options' => $this->getStyleOptions('background_colors'),
-      '#title' => $this->t('Background color'),
-      '#default_value' => $this->configuration['container_wrapper_bg_color_class'],
-      '#validated' => TRUE,
-      '#attributes' => [
-        'class' => ['bootstrap_layout_builder_bg_color'],
-      ],
-      '#states' => [
-        'visible' => [
-          ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
-        ],
+    // Get styling options.
+    $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration);
+    // Alter styling elements.
+    $form['ui']['tab_content']['appearance']['background']['#states'] = [
+      'visible' => [
+        ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
       ],
     ];
+    $form['ui']['tab_content']['appearance']['background']['background_color']['#attributes']['class'][] = 'bootstrap_layout_builder_bg_color';
+    // @TODO Map old configs.
 
     // Background media.
     $allowed_bundles = [];
@@ -549,8 +549,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     if ($form_state->getValue(array_merge($layout_tab, ['has_container']))) {
       $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
 
-      // Container wrapper.
-      $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_color_class']));
+      // Styles tab.
+      $this->configuration = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration);
+
+      // $this->configuration['container_wrapper_bg_color_class'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_color_class']));
       $this->configuration['container_wrapper_bg_media'] = $form_state->getValue(array_merge($style_tab, ['container_wrapper_bg_media']));
       // Container classes from advanced mode.
       if (!$this->sectionSettingsIsHidden()) {
