@@ -84,18 +84,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   public function build(array $regions) {
     $build = parent::build($regions);
 
-    // Container.
-    if ($this->configuration['container']) {
-      $build['container']['#attributes']['class'] = $this->configuration['container'];
-
-      $build['container_wrapper'] = $this->stylesGroupManager->buildStyles([], $this->configuration['container_wrapper']['bootstrap_styles']);
-
-      if ($this->configuration['container_wrapper_classes']) {
-        $build['container_wrapper']['#attributes']['class'][] = $this->configuration['container_wrapper_classes'];
-      }
-    }
-
-    // Section Classes.
     $section_classes = [];
     if ($this->configuration['section_classes']) {
       $section_classes = explode(' ', $this->configuration['section_classes']);
@@ -111,6 +99,35 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         }
         $build[$region_name]['#attributes']['class'][] = $region_classes;
       }
+    }
+
+    // Container.
+    if ($this->configuration['container']) {
+      $theme_wrappers = [
+        'blb_container' => [
+          '#attributes' => [
+            'class' => [$this->configuration['container']],
+          ],
+        ],
+        'blb_container_wrapper' => [
+          '#attributes' => [
+            'class' => [],
+          ],
+        ],
+      ];
+
+      if ($this->configuration['container_wrapper_classes']) {
+        $theme_wrappers['blb_container_wrapper']['#attributes']['class'][] = $this->configuration['container_wrapper_classes'];
+      }
+
+      $build['#theme_wrappers'] = $theme_wrappers;
+
+      // Build dynamic styles.
+      $build = $this->stylesGroupManager->buildStyles(
+        $build,
+        $this->configuration['container_wrapper']['bootstrap_styles'], // storage.
+        'blb_container_wrapper', // Theme wrapper that we need to apply styles to it.
+      );
     }
 
     return $build;
