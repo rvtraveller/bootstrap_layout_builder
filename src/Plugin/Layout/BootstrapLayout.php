@@ -57,9 +57,9 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    * @param \Drupal\bootstrap_styles\StylesGroup\StylesGroupManager $styles_group_manager
    *   The styles group plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entity_type_manager, StylesGroupManager $styles_group_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_actory, EntityTypeManagerInterface $entity_type_manager, StylesGroupManager $styles_group_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->configFactory = $configFactory;
+    $this->configFactory = $config_actory;
     $this->entityTypeManager = $entity_type_manager;
     $this->stylesGroupManager = $styles_group_manager;
   }
@@ -347,7 +347,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     }
 
     // Container wrapper styling.
-    $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration['container_wrapper']['bootstrap_styles']);
+    $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration['container_wrapper']['bootstrap_styles'], 'bootstrap_layout_builder.styles');
     // Alter styling elements.
     $form['ui']['tab_content']['appearance']['background']['#states'] = [
       'visible' => [
