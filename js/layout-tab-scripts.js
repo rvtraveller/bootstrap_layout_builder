@@ -53,7 +53,7 @@
           }
 
           // Wrap our radio labels and display as a tooltip.
-          colsLabel.wrapInner('<div class="blb_tooltip blb_tooltip-lg"></div>');
+          colsLabel.wrapInner('<div class="bs_tooltip bs_tooltip-lg"></div>');
 
           // Provide a graphical representation of the columns via some nifty divs styling.
           $.each(colsConfig, function(index, value) {
@@ -74,26 +74,6 @@
           });
         });
 
-      });
-
-      $(".bootstrap_layout_builder_bg_color input:radio", context).once('blb_bg-color').each(function () {
-        $(this).next('label').addClass($(this).val());
-      });
-
-      // Custom solution for bootstrap 3 & Bario drupal theme issues.
-      $(".bootstrap_layout_builder_bg_color .fieldset-wrapper input:radio", context).each(function () {
-        $(this).parents('.radio').find('label').addClass($(this).val());
-        var checked = $(this).prop("checked");
-        if (typeof checked !== typeof undefined && checked !== false) {
-          $(this).parents('.radio').find('label').addClass('active');
-        }
-      });
-
-      $(".bootstrap_layout_builder_bg_color .fieldset-wrapper label", context).on('click', function () {
-        $(this).parents('.fieldset-wrapper').find('label').removeClass('active');
-        $(this).parents('.fieldset-wrapper').find('input').prop("checked", false);
-        $(this).parent().find('input').prop('checked', true);
-        $(this).addClass('active');
       });
     }
   };
