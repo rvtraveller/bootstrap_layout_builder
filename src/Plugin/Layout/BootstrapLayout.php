@@ -50,16 +50,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
    *   The plugin_id for the plugin instance.
    * @param array $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\bootstrap_styles\StylesGroup\StylesGroupManager $styles_group_manager
    *   The styles group plugin manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_actory, EntityTypeManagerInterface $entity_type_manager, StylesGroupManager $styles_group_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, StylesGroupManager $styles_group_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->configFactory = $config_actory;
+    $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->stylesGroupManager = $styles_group_manager;
   }
@@ -251,8 +251,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#type' => 'html_tag',
       '#tag' => 'ul',
       '#attributes' => [
-        'class' => 'blb_nav-tabs',
-        'id' => 'blb_nav-tabs',
+        'class' => 'bs_nav-tabs',
+        'id' => 'bs_nav-tabs',
         'role' => 'tablist',
       ],
     ];
@@ -261,7 +261,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#type' => 'container',
       '#attributes' => [
         'class' => 'blb_tab-content',
-        'id' => 'blb_tabContent',
+        'id' => 'bs_tabContent',
       ],
     ];
 
@@ -282,8 +282,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#type' => 'container',
         '#attributes' => [
           'class' => [
-            'blb_tab-pane',
-            'blb_tab-pane--' . $tab['machine_name'],
+            'bs_tab-pane',
+            'bs_tab-pane--' . $tab['machine_name'],
             isset($tab['active']) && $tab['active'] == TRUE ? 'active' : '',
           ],
         ],

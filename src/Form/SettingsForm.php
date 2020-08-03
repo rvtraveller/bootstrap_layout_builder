@@ -4,11 +4,6 @@ namespace Drupal\bootstrap_layout_builder\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
-use Drupal\Core\Ajax\HtmlCommand;
-use Drupal\Core\Ajax\AjaxResponse;
 
 /**
  * Configure Bootstrap Layout Builder settings.

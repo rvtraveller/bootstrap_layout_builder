@@ -9,19 +9,6 @@
   // Configure Section.
   Drupal.behaviors.bootstrapLayoutBuilderConfigureSection = {
     attach: function (context) {
-
-      // Our Tabbed User Interface.
-      $("#blb_nav-tabs li a", context).once('blb_nav-tabs').on('click', function () {
-        $('#blb_nav-tabs li a').removeClass('active');
-        $(this).toggleClass('active');
-        var href = $(this).attr('data-target');
-
-        if(href && $('#blb_tabContent').length) {
-          $('.blb_tab-pane').removeClass('active');
-          $('.blb_tab-pane--' + href).addClass('active');
-        }
-      });
-
       // Custom solution for Bootstrap 3 Drupal theme.
       $('input.blb_container_type', context).each(function() {
         var checked = $(this).prop("checked");
