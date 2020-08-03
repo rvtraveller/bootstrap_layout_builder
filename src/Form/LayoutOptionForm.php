@@ -132,7 +132,8 @@ class LayoutOptionForm extends EntityForm implements ContainerInjectionInterface
     $layout_id = $this->routeMatch->getParameter('blb_layout');
     if ($layout_id) {
       $layout = $this->entity->getLayoutById($layout_id);
-    } else {
+    }
+    else {
       $layout = $this->entity->getLayout();
     }
 

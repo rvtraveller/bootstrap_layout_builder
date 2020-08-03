@@ -2,7 +2,7 @@
   "name": "bootstrap_layout_builder",
   "description": "Add Bootstrap Grid support to Layout Builder module.",
   "author": "Mahmoud Zayed",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "scripts": {
     "css:compile": "node-sass scss --output-style expanded -o css/",
     "css:build": "npm run css:compile",

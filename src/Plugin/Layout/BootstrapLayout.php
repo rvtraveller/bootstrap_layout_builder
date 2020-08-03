@@ -125,8 +125,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // Build dynamic styles.
       $build = $this->stylesGroupManager->buildStyles(
         $build,
-        $this->configuration['container_wrapper']['bootstrap_styles'], // storage.
-        'blb_container_wrapper', // Theme wrapper that we need to apply styles to it.
+      // storage.
+        $this->configuration['container_wrapper']['bootstrap_styles'],
+      // Theme wrapper that we need to apply styles to it.
+        'blb_container_wrapper',
       );
     }
 
@@ -356,7 +358,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     ];
     $form['ui']['tab_content']['appearance']['background']['background_color']['#attributes']['class'][] = 'bootstrap_layout_builder_bg_color';
     // @TODO Map old configs.
-
     // Move default admin label input to setting tab.
     $form['ui']['tab_content']['settings']['label'] = $form['label'];
     unset($form['label']);
@@ -471,7 +472,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       }
     }
 
-    // Gutter Classes
+    // Gutter Classes.
     $this->configuration['remove_gutters'] = $form_state->getValue(array_merge($layout_tab, ['remove_gutters']));
 
     // Row classes from advanced mode.
