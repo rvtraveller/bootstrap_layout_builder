@@ -4,7 +4,7 @@ dependencies: {  }
 id: blb_col_2_25_75
 layout_id: blb_col_2
 label: '25% 75%'
-structure: '4 8'
+structure: '3 9'
 breakpoints:
   desktop: desktop
   tablet: tablet
