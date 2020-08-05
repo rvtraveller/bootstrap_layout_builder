@@ -26,6 +26,9 @@
     input {
       opacity: 0;
       position: absolute;
+      width: 0;
+      height: 0;
+      display: block;
 
       + label {
         border: 2px solid white;
@@ -37,6 +40,10 @@
         justify-content: center;
         text-align: center;
         cursor: pointer;
+
+        &:hover {
+          background-color: rgba($white, .1);
+        }
       }
 
       // Active state.
@@ -48,7 +55,7 @@
 
     // Custom fix for Bootstrap 3 Drupal theme.
     label {
-      border: 2px solid white;
+      border: 2px solid $white;
       height: 50px;
       width: 100%;
       display: flex;
@@ -106,10 +113,9 @@
       height: 0;
       display: block;
 
-      &:checked + label .blb_breakpoint_col
-      {
+      &:checked + label .blb_breakpoint_col {
         color: $white;
-        background-color: #277abd;
+        background-color: $blue-277;
       }
     }
 
@@ -127,7 +133,7 @@
 
     &.bp-selected {
       color: $white;
-      background-color: #277abd;
+      background-color: $blue-277;
 
       &:hover {
         color: $gray-444;
