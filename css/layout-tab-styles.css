@@ -1,32 +1,26 @@
-#drupal-off-canvas .blb_container_type .form-radios,
 #drupal-off-canvas .blb_container_type .fieldset-wrapper > div {
   display: flex;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div {
   position: relative;
   flex: 1;
   margin: 0;
   padding: 0;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type:first-child input + label {
-  border-right: 0;
-}
-
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type:last-child input + label {
-  border-left: 0;
-}
-
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input {
-  opacity: 0;
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div input {
   position: absolute;
-  width: 0;
-  height: 0;
-  display: block;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input + label {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div input + label {
   border: 2px solid white;
   padding: 10px;
   height: 50px;
@@ -38,16 +32,16 @@
   cursor: pointer;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input + label:hover {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div input + label:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input:checked + label {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div input:checked + label {
   color: #444444;
   background-color: #ffffff;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type label {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div label {
   border: 2px solid #ffffff;
   height: 50px;
   width: 100%;
@@ -58,21 +52,29 @@
   cursor: pointer;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type label + input {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div label + input {
   opacity: 0;
   position: absolute;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type label.active {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div label.active {
   color: #444444;
   background-color: #ffffff;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type:first-child input + label {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div:first-child input + label {
+  border-right: 0;
+}
+
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div:last-child input + label {
+  border-left: 0;
+}
+
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div:first-child input + label {
   border-radius: 8px 0 0 8px;
 }
 
-#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type:last-child input + label {
+#drupal-off-canvas .blb_container_type .fieldset-wrapper > div > div:last-child input + label {
   border-radius: 0 8px 8px 0;
 }
 
