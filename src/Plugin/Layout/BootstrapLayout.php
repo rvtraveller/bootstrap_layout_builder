@@ -225,7 +225,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#type' => 'container',
       '#weight' => -100,
       '#attributes' => [
-        'id' => 'blb_ui',
+        'id' => 'bs_ui',
       ],
     ];
 
@@ -262,7 +262,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $form['ui']['tab_content'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => 'blb_tab-content',
+        'class' => 'bs_tab-content',
         'id' => 'bs_tabContent',
       ],
     ];
