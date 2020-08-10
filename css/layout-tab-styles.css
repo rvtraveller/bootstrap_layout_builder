@@ -21,6 +21,9 @@
 #drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input {
   opacity: 0;
   position: absolute;
+  width: 0;
+  height: 0;
+  display: block;
 }
 
 #drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input + label {
@@ -35,13 +38,17 @@
   cursor: pointer;
 }
 
+#drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input + label:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 #drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type input:checked + label {
   color: #444444;
   background-color: #ffffff;
 }
 
 #drupal-off-canvas .form-item-layout-settings-ui-tab-content-layout-container-type label {
-  border: 2px solid white;
+  border: 2px solid #ffffff;
   height: 50px;
   width: 100%;
   display: flex;
