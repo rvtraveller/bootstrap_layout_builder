@@ -464,7 +464,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
 
       // Styles tab.
-      $this->configuration['container_wrapper']['bootstrap_styles'] = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration['container_wrapper']['bootstrap_styles']);
+      $this->configuration['container_wrapper']['bootstrap_styles'] = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration['container_wrapper']['bootstrap_styles'], 'bootstrap_layout_builder.styles');
 
       // Container classes from advanced mode.
       if (!$this->sectionSettingsIsHidden()) {
