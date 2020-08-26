@@ -128,7 +128,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // storage.
         $this->configuration['container_wrapper']['bootstrap_styles'],
       // Theme wrapper that we need to apply styles to it.
-        'blb_container_wrapper',
+        'blb_container_wrapper'
       );
     }
 
