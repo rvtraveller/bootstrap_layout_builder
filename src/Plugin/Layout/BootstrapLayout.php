@@ -351,13 +351,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     // Container wrapper styling.
     $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration['container_wrapper']['bootstrap_styles'], 'bootstrap_layout_builder.styles');
     // Alter styling elements.
-    $form['ui']['tab_content']['appearance']['background']['#states'] = [
-      'visible' => [
-        ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
-      ],
-    ];
-    $form['ui']['tab_content']['appearance']['background']['background_color']['#attributes']['class'][] = 'bootstrap_layout_builder_bg_color';
-    // @TODO Map old configs.
+    foreach (array_keys($form['ui']['tab_content']['appearance']) as $group_key) {
+      if (substr($group_key, 0, 1) !== '#') {
+        $form['ui']['tab_content']['appearance'][$group_key]['#states'] = [
+          'visible' => [
+            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
+          ],
+        ];
+      }
+    }
+
     // Move default admin label input to setting tab.
     $form['ui']['tab_content']['settings']['label'] = $form['label'];
     unset($form['label']);
@@ -368,6 +371,11 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#type' => 'details',
         '#title' => $this->t('Container Settings'),
         '#open' => FALSE,
+        '#states' => [
+          'visible' => [
+            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
+          ],
+        ],
       ];
 
       $form['ui']['tab_content']['settings']['container']['container_wrapper_classes'] = [
