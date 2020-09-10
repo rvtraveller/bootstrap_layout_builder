@@ -43,3 +43,10 @@ function bootstrap_layout_builder_update_8003() {
   $entityUpdateManager->installEntityType($blb_layout_entity_type);
   $entityUpdateManager->installEntityType($blb_layout_option_entity_type);
 }
+
+/**
+ * Make sure that dependent Bootstrap Styles module is installed.
+ */
+function bootstrap_layout_builder_update_8004() {
+  \Drupal::service('module_installer')->install(['bootstrap_styles']);
+}
