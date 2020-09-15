@@ -5,7 +5,7 @@
 
 (function ($, _, Drupal, drupalSettings) {
   "use strict";
-  
+
   // Configure Section.
   Drupal.behaviors.bootstrapLayoutBuilderConfigureSection = {
     attach: function (context) {
@@ -62,6 +62,12 @@
         });
 
       });
+
+      // Auto-sized textareas.
+      $('textarea.blb-auto-size', context).each(function() {
+        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;min-height:60px!important;padding:5px;');
+      });
+
     }
   };
 

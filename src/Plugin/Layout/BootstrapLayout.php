@@ -2,10 +2,12 @@
 
 namespace Drupal\bootstrap_layout_builder\Plugin\Layout;
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Layout\LayoutDefault;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Serialization\Yaml;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\bootstrap_styles\StylesGroup\StylesGroupManager;
@@ -84,13 +86,19 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   public function build(array $regions) {
     $build = parent::build($regions);
 
+    // Row classes and attributes.
     $section_classes = [];
     if ($this->configuration['section_classes']) {
       $section_classes = explode(' ', $this->configuration['section_classes']);
       $build['#attributes']['class'] = $section_classes;
     }
 
-    // Regions classes.
+    if (!empty($this->configuration['section_attributes'])) {
+      $section_attributes = $this->configuration['section_attributes'];
+      $build['#attributes'] = NestedArray::mergeDeep($build['#attributes'] ?? [], $section_attributes);
+    }
+
+    // Regions classes and attributes.
     if ($this->configuration['regions_classes']) {
       foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
         $region_classes = $this->configuration['regions_classes'][$region_name];
@@ -98,6 +106,15 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           $build[$region_name]['#attributes']['class'] = $this->configuration['layout_regions_classes'][$region_name];
         }
         $build[$region_name]['#attributes']['class'][] = $region_classes;
+      }
+    }
+
+    if ($this->configuration['regions_attributes']) {
+      foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
+        $region_attributes = $this->configuration['regions_attributes'][$region_name];
+        if (!empty($region_attributes)) {
+          $build[$region_name]['#attributes'] = NestedArray::mergeDeep($build[$region_name]['#attributes'] ?? [], $region_attributes);
+        }
       }
     }
 
@@ -118,6 +135,11 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
       if ($this->configuration['container_wrapper_classes']) {
         $theme_wrappers['blb_container_wrapper']['#attributes']['class'][] = $this->configuration['container_wrapper_classes'];
+      }
+
+      if (!empty($this->configuration['container_wrapper_attributes'])) {
+        $wrapper_attributes = $this->configuration['container_wrapper_attributes'];
+        $theme_wrappers['blb_container_wrapper']['#attributes'] = NestedArray::mergeDeep($theme_wrappers['blb_container_wrapper']['#attributes'] ?? [], $wrapper_attributes);
       }
 
       $build['#theme_wrappers'] = $theme_wrappers;
@@ -141,14 +163,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   public function defaultConfiguration() {
     $default_configuration = parent::defaultConfiguration();
 
-    $regions_classes = [];
+    $regions_classes = $regions_attributes = [];
     foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
       $regions_classes[$region_name] = '';
+      $regions_attributes[$region_name] = [];
     }
 
     return $default_configuration + [
       // Container wrapper commonly used on container background and minor styling.
       'container_wrapper_classes' => '',
+      'container_wrapper_attributes' => [],
       // Container wrapper.
       'container_wrapper' => [
         // The dynamic bootstrap styles storage.
@@ -164,8 +188,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       'container' => '',
       // Section refer to the div that contains row in bootstrap.
       'section_classes' => '',
+      'section_attributes' => [],
       // Region refer to the div that contains Col in bootstrap "Advanced mode".
       'regions_classes' => $regions_classes,
+      'regions_attributes' => $regions_attributes,
       // Array of breakpoints and the value of its option.
       'breakpoints' => [],
       // The region refer to the div that contains Col in bootstrap.
@@ -202,7 +228,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $options = [];
     $config_options = $config->get($name);
 
-    $options = ['_none' => t('N/A')];
+    $options = ['_none' => $this->t('N/A')];
     $lines = explode(PHP_EOL, $config_options);
     foreach ($lines as $line) {
       $line = explode('|', $line);
@@ -385,6 +411,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#default_value' => $this->configuration['container_wrapper_classes'],
       ];
 
+      $container_attributes = $this->configuration['container_wrapper_attributes'];
+      $form['ui']['tab_content']['settings']['container']['container_wrapper_attributes'] = [
+        '#type' => 'textarea',
+        '#title' => $this->t('Container wrapper attributes (YAML)'),
+        '#default_value' => empty($container_attributes) ? '' : Yaml::encode($container_attributes),
+        '#attributes' => ['class' => ['blb-auto-size']],
+        '#rows' => 1,
+        '#element_validate' => [[$this, 'validateYaml']],
+      ];
+
       $form['ui']['tab_content']['settings']['row'] = [
         '#type' => 'details',
         '#title' => $this->t('Row Settings'),
@@ -397,6 +433,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#title' => $this->t('Row classes'),
         '#description' => $this->t('Row has "row" class, you can add more classes separated by space. Ex: no-gutters py-3.'),
         '#default_value' => $this->configuration['section_classes'],
+      ];
+
+      $row_attributes = $this->configuration['section_attributes'];
+      $form['ui']['tab_content']['settings']['row']['section_attributes'] = [
+        '#type' => 'textarea',
+        '#title' => $this->t('Row attributes (YAML)'),
+        '#default_value' => empty($row_attributes) ? '' : Yaml::encode($row_attributes),
+        '#attributes' => ['class' => ['auto-size']],
+        '#rows' => 1,
+        '#element_validate' => [[$this, 'validateYaml']],
       ];
 
       $form['ui']['tab_content']['settings']['regions'] = [
@@ -412,6 +458,17 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('classes'),
           '#default_value' => $this->configuration['regions_classes'][$region_name],
         ];
+
+        $region_attributes = $this->configuration['regions_attributes'][$region_name];
+        $form['ui']['tab_content']['settings']['regions'][$region_name . '_attributes'] = [
+          '#type' => 'textarea',
+          '#title' => $this->getPluginDefinition()->getRegionLabels()[$region_name] . ' ' . $this->t('attributes (YAML)'),
+          '#default_value' => empty($region_attributes) ? '' : Yaml::encode($region_attributes),
+          '#attributes' => ['class' => ['auto-size']],
+          '#rows' => 1,
+          '#element_validate' => [[$this, 'validateYaml']],
+        ];
+
       }
     }
 
@@ -456,6 +513,25 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   /**
    * {@inheritdoc}
    */
+  public function validateYaml($element, FormStateInterface $form_state, array $form) {
+    $value = $element['#value'];
+    try {
+      $array_values = Yaml::decode($value);
+
+      // Fix Classes as strings.
+      if (isset($array_values['class']) && !is_array($array_values['class'])) {
+        $array_values['class'] = explode(' ', $array_values['class']);
+      }
+      $form_state->setValueForElement($element, Yaml::encode($array_values));
+    }
+    catch (\Exception $exception) {
+      $form_state->setError($element, $this->t('Invalid YAML entered for %field', ['%field' => $element['#title']]));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
     // The tabs structure.
@@ -477,6 +553,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // Container classes from advanced mode.
       if (!$this->sectionSettingsIsHidden()) {
         $this->configuration['container_wrapper_classes'] = $form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_classes']));
+        $this->configuration['container_wrapper_attributes'] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_attributes'])));
       }
     }
 
@@ -486,6 +563,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     // Row classes from advanced mode.
     if (!$this->sectionSettingsIsHidden()) {
       $this->configuration['section_classes'] = $form_state->getValue(array_merge($settings_tab, ['row', 'section_classes']));
+      $this->configuration['section_attributes'] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['row', 'section_attributes'])));
     }
 
     $breakpoints = $form_state->getValue(array_merge($layout_tab, ['breakpoints']));
@@ -498,6 +576,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // Cols classes from advanced mode.
       if (!$this->sectionSettingsIsHidden()) {
         $this->configuration['regions_classes'][$region_name] = $form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_classes']));
+        $this->configuration['regions_attributes'][$region_name] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_attributes'])));
       }
     }
 
