@@ -271,12 +271,12 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     foreach ($tabs as $tab) {
       $form['ui']['nav_tabs'][$tab['machine_name']] = [
         '#type' => 'inline_template',
-        '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}">{{ icon }}<div class="bs_tooltip" data-placement="bottom" role="tooltip">{{ title }}</div></a></li>',
+        '#template' => '<li><a data-target="{{ target|clean_class }}" class="{{active}}"><span role="img">{% include icon %}</span><div class="bs_tooltip" data-placement="bottom" role="tooltip">{{ title }}</div></a></li>',
         '#context' => [
           'title' => $tab['title'],
           'target' => $tab['machine_name'],
           'active' => isset($tab['active']) && $tab['active'] == TRUE ? 'active' : '',
-          'icon' => $this->t('<img class="blb_icon" src="/' . drupal_get_path('module', 'bootstrap_styles') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg') . '" />'),
+          'icon' => '/' . drupal_get_path('module', 'bootstrap_styles') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg'),
         ],
       ];
 
@@ -417,6 +417,11 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
     // Attach Bootstrap Styles base library.
     $form['#attached']['library'][] = 'bootstrap_styles/layout_builder_form_style';
+
+    // Theme logic.
+    // @todo: we need to load this specific file AFTER our sub theme overrides of the core/drupal.dialog library
+    // @todo: look for "/core/themes/stable/css/core/dialog/off-canvas.theme.css", this needs to load after it.
+    // $form['#attached']['library'][] = 'bootstrap_styles/theme.light';
 
     // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/layout_builder_form_style';
