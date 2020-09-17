@@ -15,7 +15,7 @@
 }
 
 // Rounded input style
-@mixin blb_box_inputs {
+@mixin blb_box_inputs($panel_text_color: $white, $panel_bg_color: $gray-444) {
   position: relative;
   flex: 1;
   margin: 0;
@@ -25,7 +25,7 @@
     @include sr-only;
 
     + label {
-      border: 2px solid white;
+      border: 2px solid $panel_text_color;
       padding: 10px;
       height: 50px;
       width: 100%;
@@ -36,20 +36,20 @@
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($white, .1);
+        background-color: rgba($panel_text_color, .1);
       }
     }
 
     // Active state.
     &:checked + label {
-      color: $gray-444;
-      background-color: $white;
+      color: $panel_bg_color;
+      background-color: $panel_text_color;
     }
   }
 
   // Custom fix for Bootstrap 3 Drupal theme.
   label {
-    border: 2px solid $white;
+    border: 2px solid $panel_text_color;
     height: 50px;
     width: 100%;
     display: flex;
@@ -65,8 +65,8 @@
 
     // Active state.
     &.active {
-      color: $gray-444;
-      background-color: $white;
+      color: $panel_bg_color;
+      background-color: $panel_text_color;
     }
   }
 }

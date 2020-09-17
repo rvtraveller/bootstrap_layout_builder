@@ -65,7 +65,7 @@
 
       // Auto-sized textareas.
       $('textarea.blb-auto-size', context).each(function() {
-        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;min-height:60px!important;padding:5px;');
+        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;min-height:60px!important;padding:.65rem 1rem;');
       });
 
     }
