@@ -475,11 +475,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     // Attach Bootstrap Styles base library.
     $form['#attached']['library'][] = 'bootstrap_styles/layout_builder_form_style';
 
-    // Theme logic.
-    // @todo: we need to load this specific file AFTER our sub theme overrides of the core/drupal.dialog library
-    // @todo: look for "/core/themes/stable/css/core/dialog/off-canvas.theme.css", this needs to load after it.
-    // $form['#attached']['library'][] = 'bootstrap_styles/theme.light';
-
     // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/layout_builder_form_style';
     return $form;
