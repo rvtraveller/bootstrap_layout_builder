@@ -15,9 +15,10 @@
 }
 
 // Rounded input style
-@mixin blb_box_inputs($panel_text_color: $white, $panel_bg_color: $gray-444) {
+@mixin blb_box_inputs($width: 100%) {
   position: relative;
-  flex: 1;
+  flex: $width;
+  width: $width;
   margin: 0;
   padding: 0;
 
@@ -25,6 +26,7 @@
     @include sr-only;
 
     + label {
+      @include smooth-all-transition;
       border: 2px solid $panel_text_color;
       padding: 10px;
       height: 50px;

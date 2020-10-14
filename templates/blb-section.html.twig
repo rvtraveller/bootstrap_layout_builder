@@ -19,6 +19,7 @@
 
 {% if content %}
   <div {{ attributes.addClass(classes) }}>
+    {{ title_prefix }}
     {% for i in 1..12 %}
       {% set region = "blb_region_col_" ~ i %}
       {% if content[region] %}
@@ -27,6 +28,7 @@
         </div>
       {% endif %}
     {% endfor %}
+    {{ title_suffix }}
   </div>
 
 {% endif %}

@@ -7,6 +7,7 @@
   .blb_container_type {
     .fieldset-wrapper > div {
       display: flex;
+      margin-bottom: 10px;
 
       // Our actual form item.
       > div {
@@ -35,6 +36,7 @@
   // Graphical Layout Columns
   .blb_breakpoint_cols {
     label {
+      font-size: .875rem;
       position: relative;
       display: flex;
       margin: 0 -5px;
