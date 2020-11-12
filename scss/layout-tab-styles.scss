@@ -4,34 +4,34 @@
 #drupal-off-canvas {
 
   // Container Type
-  .blb_container_type {
-    .fieldset-wrapper > div {
-      display: flex;
-      margin-bottom: 10px;
+  //.blb_container_type {
+    //.fieldset-wrapper > div {
+      //display: flex;
+      //margin-bottom: 10px;
 
       // Our actual form item.
-      > div {
-        @include blb_box_inputs;
+      //> div {
+        //@include blb_box_inputs;
 
-        &:first-child input + label {
-          border-right: 0;
-        }
-
-        &:last-child input + label {
-          border-left: 0;
-        }
-
-        // Pill style toggle.
-        &:first-child input + label {
-          border-radius: 8px 0 0 8px;
-        }
-
-        &:last-child input + label {
-          border-radius: 0 8px 8px 0;
-        }
-      }
-    }
-  }
+        //&:first-child input + label {
+        //  border-right: 0;
+        //}
+        //
+        //&:last-child input + label {
+        //  border-left: 0;
+        //}
+        //
+        //// Pill style toggle.
+        //&:first-child input + label {
+        //  border-radius: 8px 0 0 8px;
+        //}
+        //
+        //&:last-child input + label {
+        //  border-radius: 0 8px 8px 0;
+        //}
+      //}
+    //}
+  //}
 
   // Graphical Layout Columns
   .blb_breakpoint_cols {

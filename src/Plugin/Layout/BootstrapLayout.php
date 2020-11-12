@@ -347,11 +347,30 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ],
     ];
 
-    $form['ui']['tab_content']['layout']['remove_gutters'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('No Gutters'),
-      '#default_value' => (int) !empty($this->configuration['remove_gutters']) ? TRUE : FALSE,
+    // Add icons to the container types.
+    foreach ($form['ui']['tab_content']['layout']['container_type']['#options'] as $key => $value) {
+      $form['ui']['tab_content']['layout']['container_type']['#options'][$key] = '<span class="input-icon ' . $key . '"></span>' . $value;
+    }
+
+    $gutter_types = [
+      0 => $this->t('With Gutter'),
+      1 => $this->t('No Gutters'),
     ];
+
+    $form['ui']['tab_content']['layout']['remove_gutters'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Gutter'),
+      '#options' => $gutter_types,
+      '#default_value' => (int) !empty($this->configuration['remove_gutters']) ? 1 : 0,
+      '#attributes' => [
+        'class' => ['blb_gutter_type'],
+      ],
+    ];
+
+    // Add icons to the gutter types.
+    foreach ($form['ui']['tab_content']['layout']['remove_gutters']['#options'] as $key => $value) {
+      $form['ui']['tab_content']['layout']['remove_gutters']['#options'][$key] = '<span class="input-icon gutter-icon-' . $key . '"></span>' . $value;
+    }
 
     $layout_id = $this->getPluginDefinition()->id();
     $breakpoints = $this->entityTypeManager->getStorage('blb_breakpoint')->getQuery()->sort('weight', 'ASC')->execute();
