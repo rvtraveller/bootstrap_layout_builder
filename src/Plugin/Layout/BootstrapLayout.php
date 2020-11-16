@@ -318,32 +318,19 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       ];
     }
 
-    // Check if section settings visible.
-    $form['ui']['tab_content']['layout']['has_container'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Add Container'),
-      '#default_value' => (int) !empty($this->configuration['container']) ? TRUE : FALSE,
-    ];
-
     $container_types = [
       'container' => $this->t('Boxed'),
       'container-fluid' => $this->t('Full'),
-      'w-100' => $this->t('Flush'),
+      'w-100' => $this->t('Edge to Edge'),
     ];
 
     $form['ui']['tab_content']['layout']['container_type'] = [
       '#type' => 'radios',
       '#title' => $this->t('Container type'),
-      '#title_display' => 'invisible',
       '#options' => $container_types,
       '#default_value' => !empty($this->configuration['container']) ? $this->configuration['container'] : 'container',
       '#attributes' => [
         'class' => ['blb_container_type'],
-      ],
-      '#states' => [
-        'visible' => [
-          ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
-        ],
       ],
     ];
 
@@ -353,13 +340,13 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     }
 
     $gutter_types = [
-      0 => $this->t('With Gutter'),
+      0 => $this->t('With Gutters'),
       1 => $this->t('No Gutters'),
     ];
 
     $form['ui']['tab_content']['layout']['remove_gutters'] = [
       '#type' => 'radios',
-      '#title' => $this->t('Gutter'),
+      '#title' => $this->t('Gutters'),
       '#options' => $gutter_types,
       '#default_value' => (int) !empty($this->configuration['remove_gutters']) ? 1 : 0,
       '#attributes' => [
@@ -395,16 +382,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
     // Container wrapper styling.
     $form['ui']['tab_content']['appearance'] = $this->stylesGroupManager->buildStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $this->configuration['container_wrapper']['bootstrap_styles'], 'bootstrap_layout_builder.styles');
-    // Alter styling elements.
-    foreach (array_keys($form['ui']['tab_content']['appearance']) as $group_key) {
-      if (substr($group_key, 0, 1) !== '#') {
-        $form['ui']['tab_content']['appearance'][$group_key]['#states'] = [
-          'visible' => [
-            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
-          ],
-        ];
-      }
-    }
 
     // Move default admin label input to setting tab.
     $form['ui']['tab_content']['settings']['label'] = $form['label'];
@@ -416,11 +393,6 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         '#type' => 'details',
         '#title' => $this->t('Container Settings'),
         '#open' => FALSE,
-        '#states' => [
-          'visible' => [
-            ':input[name="layout_settings[ui][tab_content][layout][has_container]"]' => ['checked' => TRUE],
-          ],
-        ],
       ];
 
       $form['ui']['tab_content']['settings']['container']['container_wrapper_classes'] = [
@@ -562,18 +534,15 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $this->configuration['label'] = $form_state->getValue(array_merge($settings_tab, ['label']));
 
     // Container type.
-    $this->configuration['container'] = '';
-    if ($form_state->getValue(array_merge($layout_tab, ['has_container']))) {
-      $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
+    $this->configuration['container'] = $form_state->getValue(array_merge($layout_tab, ['container_type']));
 
-      // Styles tab.
-      $this->configuration['container_wrapper']['bootstrap_styles'] = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration['container_wrapper']['bootstrap_styles'], 'bootstrap_layout_builder.styles');
+    // Styles tab.
+    $this->configuration['container_wrapper']['bootstrap_styles'] = $this->stylesGroupManager->submitStylesFormElements($form['ui']['tab_content']['appearance'], $form_state, $style_tab, $this->configuration['container_wrapper']['bootstrap_styles'], 'bootstrap_layout_builder.styles');
 
-      // Container classes from advanced mode.
-      if (!$this->sectionSettingsIsHidden()) {
-        $this->configuration['container_wrapper_classes'] = $form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_classes']));
-        $this->configuration['container_wrapper_attributes'] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_attributes'])));
-      }
+    // Container classes from advanced mode.
+    if (!$this->sectionSettingsIsHidden()) {
+      $this->configuration['container_wrapper_classes'] = $form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_classes']));
+      $this->configuration['container_wrapper_attributes'] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['container', 'container_wrapper_attributes'])));
     }
 
     // Gutter Classes.
