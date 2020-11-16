@@ -45,6 +45,15 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('hide_section_settings'),
     ];
 
+    $form['one_col_layout_class'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('One col layout class'),
+      '#maxlength' => 20,
+      '#default_value' => $config->get('one_col_layout_class') ?: 'col-12',
+      '#description' => $this->t('eg: col-12.'),
+      '#required' => TRUE,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -54,6 +63,7 @@ class SettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->configFactory->getEditable(static::SETTINGS)
       ->set('hide_section_settings', $form_state->getValue('hide_section_settings'))
+      ->set('one_col_layout_class', $form_state->getValue('one_col_layout_class'))
       ->save();
 
     parent::submitForm($form, $form_state);

@@ -98,6 +98,16 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $build['#attributes'] = NestedArray::mergeDeep($build['#attributes'] ?? [], $section_attributes);
     }
 
+    // The default one col layout class.
+    if (count($this->getPluginDefinition()->getRegionNames()) == 1) {
+      $config = $this->configFactory->get('bootstrap_layout_builder.settings');
+      $one_col_layout_class = 'col-12';
+      if ($config->get('one_col_layout_class')) {
+        $one_col_layout_class = $config->get('one_col_layout_class');
+      }
+      $this->configuration['layout_regions_classes']['blb_region_col_1'][] = $one_col_layout_class;
+    }
+
     // Regions classes and attributes.
     if ($this->configuration['regions_classes']) {
       foreach ($this->getPluginDefinition()->getRegionNames() as $region_name) {
@@ -364,20 +374,22 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     foreach ($breakpoints as $breakpoint_id) {
       $breakpoint = $this->entityTypeManager->getStorage('blb_breakpoint')->load($breakpoint_id);
       $layout_options = $breakpoint->getLayoutOptions($layout_id);
-      $default_value = '';
-      if ($this->configuration['breakpoints'] && isset($this->configuration['breakpoints'][$breakpoint_id])) {
-        $default_value = $this->configuration['breakpoints'][$breakpoint_id];
+      if ($layout_options) {
+        $default_value = '';
+        if ($this->configuration['breakpoints'] && isset($this->configuration['breakpoints'][$breakpoint_id])) {
+          $default_value = $this->configuration['breakpoints'][$breakpoint_id];
+        }
+        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id] = [
+          '#type' => 'radios',
+          '#title' => $breakpoint->label(),
+          '#options' => $layout_options,
+          '#default_value' => $default_value,
+          '#validated' => TRUE,
+          '#attributes' => [
+            'class' => ['blb_breakpoint_cols'],
+          ],
+        ];
       }
-      $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id] = [
-        '#type' => 'radios',
-        '#title' => $breakpoint->label(),
-        '#options' => $layout_options,
-        '#default_value' => $default_value,
-        '#validated' => TRUE,
-        '#attributes' => [
-          'class' => ['blb_breakpoint_cols'],
-        ],
-      ];
     }
 
     // Container wrapper styling.
@@ -556,18 +568,18 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
 
     $breakpoints = $form_state->getValue(array_merge($layout_tab, ['breakpoints']));
     // Save breakpoints configuration.
-    $this->saveBreakpoints($breakpoints);
-
-    foreach ($this->getPluginDefinition()->getRegionNames() as $key => $region_name) {
-      // Save layout region classes.
-      $this->configuration['layout_regions_classes'][$region_name] = $this->getRegionClasses($key, $breakpoints);
-      // Cols classes from advanced mode.
-      if (!$this->sectionSettingsIsHidden()) {
-        $this->configuration['regions_classes'][$region_name] = $form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_classes']));
-        $this->configuration['regions_attributes'][$region_name] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_attributes'])));
+    if ($breakpoints) {
+      $this->saveBreakpoints($breakpoints);
+      foreach ($this->getPluginDefinition()->getRegionNames() as $key => $region_name) {
+        // Save layout region classes.
+        $this->configuration['layout_regions_classes'][$region_name] = $this->getRegionClasses($key, $breakpoints);
+        // Cols classes from advanced mode.
+        if (!$this->sectionSettingsIsHidden()) {
+          $this->configuration['regions_classes'][$region_name] = $form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_classes']));
+          $this->configuration['regions_attributes'][$region_name] = Yaml::decode($form_state->getValue(array_merge($settings_tab, ['regions', $region_name . '_attributes'])));
+        }
       }
     }
-
   }
 
 }
