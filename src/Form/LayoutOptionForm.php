@@ -148,9 +148,8 @@ class LayoutOptionForm extends EntityForm implements ContainerInjectionInterface
       }
     }
 
-    // Check the number of colmuns and the sum of the structure.
+    // Check the number of columns and the sum of the structure.
     if (
-      count($structure) != $layout->getNumberOfColumns() ||
       array_sum($structure) != 12
     ) {
       $invalid_structure = TRUE;
@@ -159,7 +158,7 @@ class LayoutOptionForm extends EntityForm implements ContainerInjectionInterface
     if ($invalid_structure) {
       $form_state->setErrorByName(
         'structure',
-        $this->t('Structure must be @cols numbers seperated by space and the sum of these numbers must equal 12!', ['@cols' => $layout->getNumberOfColumns()])
+        $this->t('Structure must be @cols numbers separated by space and the sum of these numbers must equal 12!', ['@cols' => $layout->getNumberOfColumns()])
       );
     }
   }
