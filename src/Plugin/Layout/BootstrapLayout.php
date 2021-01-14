@@ -312,7 +312,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
           'title' => $tab['title'],
           'target' => $tab['machine_name'],
           'active' => isset($tab['active']) && $tab['active'] == TRUE ? 'active' : '',
-          'icon' => base_path() . drupal_get_path('module', 'bootstrap_styles') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg'),
+          'icon' => drupal_get_path('module', 'bootstrap_styles') . '/images/ui/' . ($tab['icon'] ? $tab['icon'] : 'default.svg'),
         ],
       ];
 
