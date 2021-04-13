@@ -11,6 +11,10 @@ use Drupal\Core\Serialization\Yaml;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\bootstrap_styles\StylesGroup\StylesGroupManager;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Render\Element;
+use Drupal\bootstrap_styles\Ajax\RefreshResponsive;
 
 /**
  * A layout from our bootstrap layout builder.
@@ -389,6 +393,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
             'class' => ['blb_breakpoint_cols'],
           ],
         ];
+        // Check if the live preview enabled.
+        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['callback'] = [__CLASS__, 'livePreviewCallback'];
+        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['event'] = 'click';
+        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['progress'] = ['type' => 'none'];
       }
     }
 
@@ -475,12 +483,62 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       }
     }
 
+    // Check if the live preview enabled.
+    // Add the ajax live preview to form elements.
+    $this->addAjaxLivePreviewToElements($form['ui']['tab_content']);
+
     // Attach Bootstrap Styles base library.
     $form['#attached']['library'][] = 'bootstrap_styles/layout_builder_form_style';
 
     // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/layout_builder_form_style';
     return $form;
+  }
+
+  /**
+   * 
+   */
+  public function addAjaxLivePreviewToElements(array &$element) {
+    $types = [
+      'radios',
+      'radio',
+      'checkbox',
+      'textfield',
+      'textarea',
+      'range',
+    ];
+
+    if (!isset($element['#type'])) {
+      return;
+    }
+
+    if (in_array($element['#type'], $types) && !isset($element['#ajax']) && !isset($element['#disable_live_preview'])) {
+      $element['#ajax']['callback'] = [__CLASS__, 'livePreviewCallback'];
+      $element['#ajax']['event'] = 'change';
+      $element['#ajax']['progress'] = ['type' => 'none'];
+    }
+
+    if (Element::children($element)) {
+      foreach (Element::children($element) as $key) {
+        $this->addAjaxLivePreviewToElements($element[$key]);
+      }
+    }
+  }
+
+  /**
+   * 
+   */
+  public function livePreviewCallback(array $form, FormStateInterface $form_state) {
+    $form_state->getFormObject()->submitForm($form, $form_state);
+    $layout = [
+      '#type' => 'layout_builder',
+      '#section_storage' => $form_state->getFormObject()->getSectionStorage(),
+    ];
+    $response = new AjaxResponse();
+    $response->addCommand(new ReplaceCommand('#layout-builder', $layout));
+    $response->addCommand(new RefreshResponsive('#layout-builder', NULL, []));
+
+    return $response;
   }
 
   /**
