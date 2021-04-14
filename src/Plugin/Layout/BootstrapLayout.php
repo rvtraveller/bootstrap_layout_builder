@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\bootstrap_styles\StylesGroup\StylesGroupManager;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Render\Element;
 use Drupal\bootstrap_styles\Ajax\RefreshResponsive;
 
@@ -486,6 +487,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     // Check if the live preview enabled.
     // Add the ajax live preview to form elements.
     $this->addAjaxLivePreviewToElements($form['ui']['tab_content']);
+    // Attach responsive preview.
+    $form['#attached']['library'][] = 'bootstrap_styles/bs_responsive_preview';
 
     // Attach Bootstrap Styles base library.
     $form['#attached']['library'][] = 'bootstrap_styles/layout_builder_form_style';
@@ -534,9 +537,14 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       '#type' => 'layout_builder',
       '#section_storage' => $form_state->getFormObject()->getSectionStorage(),
     ];
+
+    $data = [];
+    $tempstore = \Drupal::service('user.private_tempstore')->get('bootstrap_styles');
+    $data['active_device'] = $tempstore->get('active_device');
+
     $response = new AjaxResponse();
     $response->addCommand(new ReplaceCommand('#layout-builder', $layout));
-    $response->addCommand(new RefreshResponsive('#layout-builder', NULL, []));
+    $response->addCommand(new RefreshResponsive('#layout-builder', NULL, $data));
 
     return $response;
   }
