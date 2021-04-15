@@ -30,7 +30,7 @@
       $('.blb_breakpoint_cols', context).each(function () {
         const numOfCols = 12;
         // .custom-control, .custom-radio to solve Bario issues.
-        $(this).find('.form-item, .custom-control, .custom-radio').each(function () {
+        $(this).find('.form-item, .custom-control, .custom-radio').once().each(function () {
           var cols = $(this).find('input').val().replace('blb_col_', '');
           var colsConfig = cols.split('_');
           var colsLabel = $(this).find('label');
