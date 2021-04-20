@@ -380,9 +380,17 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       $breakpoint = $this->entityTypeManager->getStorage('blb_breakpoint')->load($breakpoint_id);
       $layout_options = $breakpoint->getLayoutOptions($layout_id);
       if ($layout_options) {
-        $default_value = '';
+        $options = $this->entityTypeManager->getStorage('blb_layout_option')->loadByProperties(['layout_id' => $layout_id]);
+        $default_value = NULL;
         if ($this->configuration['breakpoints'] && isset($this->configuration['breakpoints'][$breakpoint_id])) {
           $default_value = $this->configuration['breakpoints'][$breakpoint_id];
+        } else {
+          $options = $this->entityTypeManager->getStorage('blb_layout_option')->loadByProperties(['layout_id' => $layout_id]);
+          foreach ($options as $layoutOption) {
+            if (array_search($breakpoint->id(), $layoutOption->getDefaultBreakpointsIds()) !== FALSE) {
+              $default_value = $layoutOption->getStructureId();
+            }
+          }
         }
         $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id] = [
           '#type' => 'radios',
@@ -608,7 +616,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     $style_tab = ['ui', 'tab_content', 'appearance'];
     $settings_tab = ['ui', 'tab_content', 'settings'];
 
-    // Save sction label.
+    // Save section label.
     $this->configuration['label'] = $form_state->getValue(array_merge($settings_tab, ['label']));
 
     // Container type.
