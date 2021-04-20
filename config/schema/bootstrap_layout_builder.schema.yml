@@ -1,6 +1,6 @@
-bootstrap_layout_builder.blb_layout_option.*:
+bootstrap_layout_builder.breakpoint.*:
   type: config_entity
-  label: 'Bootstrap Layout Builder Layout option config'
+  label: 'Bootstrap Layout Builder breakpoint config'
   mapping:
     id:
       type: string
@@ -8,19 +8,95 @@ bootstrap_layout_builder.blb_layout_option.*:
     label:
       type: label
       label: 'Label'
+    base_class:
+      type: string
+      label: 'Base class'
+    weight:
+      type: integer
+      label: 'Weight'
+bootstrap_layout_builder.layout.*:
+  type: config_entity
+  label: 'Bootstrap Layout Builder Layout config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    number_of_columns:
+      type: integer
+      label: 'Number of columns'
+bootstrap_layout_builder.layout_option.*:
+  type: config_entity
+  label: 'Bootstrap Layout Builder Layout option config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
     layout_id:
       type: string
-      label: 'Layout Id'
+      label: 'Layout ID'
+    label:
+      type: label
+      label: 'Label'
     structure:
       type: string
       label: 'Structure'
     breakpoints:
       type: sequence
-      label: 'Breakpoints'
       sequence:
         type: string
+        label: Breakpoints
     weight:
       type: integer
       label: 'Weight'
-    uuid:
+bootstrap_layout_builder.settings:
+  type: config_entity
+  label: 'Bootstrap Layout Builder Layout settings'
+  mapping:
+    hide_section_settings:
+      type: boolean
+      label: 'Hide section settings'
+    one_col_layout_class:
       type: string
+      label: 'One col layout class'
+    background_colors:
+      type: string
+      label: 'Background colors'
+    background_image:
+      type: mapping
+      label: 'Relationship'
+      mapping:
+        bundle:
+          type: string
+          label: 'Bundle'
+        field:
+          type: string
+          label: 'Field'
+    background_local_video:
+      type: mapping
+      label: 'Relationship'
+      mapping:
+        bundle:
+          type: string
+          label: 'Bundle'
+        field:
+          type: string
+          label: 'Field'
+bootstrap_layout_builder.styles:
+  type: config_entity
+  label: 'Bootstrap Layout Builder Styles'
+  mapping:
+    plugins:
+      type: sequence
+      label: Style Group
+      sequence:
+        type: sequence
+        label: Plugin
+        sequence:
+          type: mapping
+          mapping:
+            enabled:
+              type: boolean
+              label: Enabled
