@@ -4,7 +4,6 @@ namespace Drupal\bootstrap_layout_builder\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\bootstrap_layout_builder\LayoutOptionInterface;
-use Drupal\Core\Entity\Annotation\ConfigEntityType;
 use Drupal\Core\Entity\EntityStorageInterface;
 
 /**

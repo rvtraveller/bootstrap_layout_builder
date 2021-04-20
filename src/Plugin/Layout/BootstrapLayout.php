@@ -13,7 +13,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\bootstrap_styles\StylesGroup\StylesGroupManager;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
-use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Render\Element;
 use Drupal\bootstrap_styles\Ajax\RefreshResponsive;
 
@@ -384,7 +383,8 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         $default_value = NULL;
         if ($this->configuration['breakpoints'] && isset($this->configuration['breakpoints'][$breakpoint_id])) {
           $default_value = $this->configuration['breakpoints'][$breakpoint_id];
-        } else {
+        }
+        else {
           $options = $this->entityTypeManager->getStorage('blb_layout_option')->loadByProperties(['layout_id' => $layout_id]);
           foreach ($options as $layoutOption) {
             if (array_search($breakpoint->id(), $layoutOption->getDefaultBreakpointsIds()) !== FALSE) {
@@ -507,7 +507,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   }
 
   /**
-   * 
+   *
    */
   public function addAjaxLivePreviewToElements(array &$element) {
     $types = [
@@ -537,7 +537,7 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   }
 
   /**
-   * 
+   *
    */
   public function livePreviewCallback(array $form, FormStateInterface $form_state) {
     $form_state->getFormObject()->submitForm($form, $form_state);
