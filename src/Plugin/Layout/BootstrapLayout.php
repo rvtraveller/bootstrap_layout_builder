@@ -229,6 +229,21 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   }
 
   /**
+   * Helper function to get live preview status.
+   *
+   * @return bool
+   *   Live preview status.
+   */
+  public function livePreviewIsEnabled() {
+    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
+    $live_preview = FALSE;
+    if ($config->get('live_preview')) {
+      $live_preview = (bool) $config->get('live_preview');
+    }
+    return $live_preview;
+  }
+
+  /**
    * Helper function to get the options of given style name.
    *
    * @param string $name
@@ -402,10 +417,13 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
             'class' => ['blb_breakpoint_cols'],
           ],
         ];
+
         // Check if the live preview enabled.
-        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['callback'] = [__CLASS__, 'livePreviewCallback'];
-        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['event'] = 'click';
-        $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['progress'] = ['type' => 'none'];
+        if ($this->livePreviewIsEnabled()) {
+          $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['callback'] = [__CLASS__, 'livePreviewCallback'];
+          $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['event'] = 'click';
+          $form['ui']['tab_content']['layout']['breakpoints'][$breakpoint_id]['#ajax']['progress'] = ['type' => 'none'];
+        }
       }
     }
 
@@ -493,8 +511,10 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
     }
 
     // Check if the live preview enabled.
-    // Add the ajax live preview to form elements.
-    $this->addAjaxLivePreviewToElements($form['ui']['tab_content']);
+    if ($this->livePreviewIsEnabled()) {
+      // Add the ajax live preview to form elements.
+      $this->addAjaxLivePreviewToElements($form['ui']['tab_content']);
+    }
     // Attach responsive preview.
     $form['#attached']['library'][] = 'bootstrap_styles/bs_responsive_preview';
 

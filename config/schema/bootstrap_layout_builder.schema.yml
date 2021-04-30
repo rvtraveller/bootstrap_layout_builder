@@ -63,6 +63,9 @@ bootstrap_layout_builder.settings:
     hide_section_settings:
       type: boolean
       label: 'Hide section settings'
+    live_preview:
+      type: boolean
+      label: 'Enable live preview'
     one_col_layout_class:
       type: string
       label: 'One col layout class'
