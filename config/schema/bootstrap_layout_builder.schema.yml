@@ -66,6 +66,9 @@ bootstrap_layout_builder.settings:
     live_preview:
       type: boolean
       label: 'Enable live preview'
+    responsive:
+      type: boolean
+      label: 'Enable responsive'
     one_col_layout_class:
       type: string
       label: 'One col layout class'

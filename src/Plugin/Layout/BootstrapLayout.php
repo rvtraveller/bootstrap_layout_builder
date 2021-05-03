@@ -244,6 +244,21 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
   }
 
   /**
+   * Helper function to get responsive status.
+   *
+   * @return bool
+   *   responsive status.
+   */
+  public function responsiveIsEnabled() {
+    $config = $this->configFactory->get('bootstrap_layout_builder.settings');
+    $responsive = FALSE;
+    if ($config->get('responsive')) {
+      $responsive = (bool) $config->get('responsive');
+    }
+    return $responsive;
+  }
+
+  /**
    * Helper function to get the options of given style name.
    *
    * @param string $name
@@ -515,14 +530,18 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
       // Add the ajax live preview to form elements.
       $this->addAjaxLivePreviewToElements($form['ui']['tab_content']);
     }
-    // Attach responsive preview.
-    $form['#attached']['library'][] = 'bootstrap_styles/bs_responsive_preview';
+    // Check if the responsive enabled.
+    if ($this->responsiveIsEnabled()) {
+      // Attach responsive preview.
+      $form['#attached']['library'][] = 'bootstrap_styles/bs_responsive_preview';
+    }
 
     // Attach Bootstrap Styles base library.
     $form['#attached']['library'][] = 'bootstrap_styles/layout_builder_form_style';
 
     // Attach the Bootstrap Layout Builder base library.
     $form['#attached']['library'][] = 'bootstrap_layout_builder/layout_builder_form_style';
+
     return $form;
   }
 
