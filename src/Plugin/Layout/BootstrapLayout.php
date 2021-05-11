@@ -701,6 +701,15 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         }
       }
     }
+    else {
+      foreach ($this->getPluginDefinition()->getRegionNames() as $key => $region_name) {
+        // Cols classes from advanced mode.
+        if (!$this->sectionSettingsIsHidden()) {
+          $this->configuration['regions_classes'][$region_name] = $form_state->getValue(array_merge($settings_tab,['regions', $region_name . '_classes']));
+          $this->configuration['regions_attributes'][$region_name] = Yaml::decode($form_state->getValue(array_merge($settings_tab,['regions', $region_name . '_attributes'])));
+        }
+      }
+    }
   }
 
 }
