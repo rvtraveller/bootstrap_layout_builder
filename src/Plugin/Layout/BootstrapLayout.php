@@ -15,6 +15,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Render\Element;
 use Drupal\bootstrap_styles\Ajax\RefreshResponsive;
+use Drupal\bootstrap_styles\ResponsiveTrait;
 
 /**
  * A layout from our bootstrap layout builder.
@@ -25,6 +26,8 @@ use Drupal\bootstrap_styles\Ajax\RefreshResponsive;
  * )
  */
 class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInterface {
+
+  use ResponsiveTrait;
 
   /**
    * The config factory.
@@ -328,6 +331,11 @@ class BootstrapLayout extends LayoutDefault implements ContainerFactoryPluginInt
         'role' => 'tablist',
       ],
     ];
+
+    if ($this->responsiveIsEnabled()) {
+      // Add the responsive previewer.
+      $this->buildResponsivePreviewer($form['ui']);
+    }
 
     $form['ui']['tab_content'] = [
       '#type' => 'container',
